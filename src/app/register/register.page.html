@@ -1,0 +1,96 @@
+<ion-header [translucent]="true">
+  <ion-toolbar>
+    <ion-segment [(ngModel)]="selectedSegment">
+      <ion-segment-button value="user">
+        <ion-label>User</ion-label>
+      </ion-segment-button>
+      <ion-segment-button value="business">
+        <ion-label>Business Owner</ion-label>
+      </ion-segment-button>
+    </ion-segment>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content [fullscreen]="true">
+  <ion-card *ngIf="selectedSegment === 'user'">
+    <ion-card-header>
+      <ion-card-title>Register as User</ion-card-title>
+    </ion-card-header>
+
+    <ion-card-content>
+      <ion-input
+        type="email"
+        fill="solid"
+        label="Email"
+        labelPlacement="floating"
+        errorText="Invalid email"
+        [(ngModel)]="userEmail"
+        email
+      ></ion-input>
+      <ion-input
+        type="text"
+        fill="solid"
+        label="Name"
+        labelPlacement="floating"
+        errorText="Invalid name"
+        [(ngModel)]="userName"
+      ></ion-input>
+      <ion-input
+        type="password"
+        fill="solid"
+        label="Password"
+        labelPlacement="floating"
+        errorText="Invalid password"
+        [(ngModel)]="userPassword"
+      ></ion-input>
+
+      <ion-button expand="block" (click)="registerUser()">Register as User</ion-button>
+      <a [routerLink]="['/login']">Login Here</a>
+    </ion-card-content>
+  </ion-card>
+
+  <ion-card *ngIf="selectedSegment === 'business'">
+    <ion-card-header>
+      <ion-card-title>Register as Business Owner</ion-card-title>
+    </ion-card-header>
+
+    <ion-card-content>
+      <ion-input
+        type="email"
+        fill="solid"
+        label="Business Email"
+        labelPlacement="floating"
+        errorText="Invalid email"
+        [(ngModel)]="businessEmail"
+        email
+      ></ion-input>
+      <ion-input
+        type="text"
+        fill="solid"
+        label="Business Name"
+        labelPlacement="floating"
+        errorText="Invalid business name"
+        [(ngModel)]="businessName"
+      ></ion-input>
+      <ion-input
+        type="text"
+        fill="solid"
+        label="Business Address"
+        labelPlacement="floating"
+        errorText="Invalid address"
+        [(ngModel)]="businessAddress"
+      ></ion-input>
+      <ion-input
+        type="password"
+        fill="solid"
+        label="Password"
+        labelPlacement="floating"
+        errorText="Invalid password"
+        [(ngModel)]="businessPassword"
+      ></ion-input>
+
+      <ion-button expand="block" (click)="registerBusiness()">Register as Business Owner</ion-button>
+      <a [routerLink]="['/login']">Login Here</a>
+    </ion-card-content>
+  </ion-card>
+</ion-content>
