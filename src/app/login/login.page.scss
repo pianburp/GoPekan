@@ -1,0 +1,42 @@
+.custom-title {
+    text-align: center;
+    font-size: 4em;
+    font-weight: bold;
+  }
+  .center-card {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh; /* Full viewport height to center vertically */
+  }
+  
+  ion-card {
+    width: 100%;
+    max-width: 600px; /* Optional: Limit the card's max width */
+    margin: 0 16px; /* Optional: Some margin on the sides for smaller screens */
+  }
+  .center-card {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh; /* Full viewport height for vertical centering */
+  }
+  
+  
+  /* Input container for aligning icons and inputs */
+  .input-container {
+    display: flex;
+    align-items: center;
+    margin-bottom: 20px; /* Add space between inputs */
+  }
+  
+  ion-icon {
+    margin-right: 10px; /* Space between icon and input */
+    font-size: 24px;    /* Icon size */
+    color: #999;        /* Optional: Change icon color */
+  }
+  
+  ion-input {
+    flex-grow: 1;       /* Make input take the remaining space */
+  }
+  

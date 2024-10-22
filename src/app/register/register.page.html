@@ -12,85 +12,126 @@
 </ion-header>
 
 <ion-content [fullscreen]="true">
+  <!-- User Segment -->
   <ion-card *ngIf="selectedSegment === 'user'">
     <ion-card-header>
       <ion-card-title>Register as User</ion-card-title>
     </ion-card-header>
 
     <ion-card-content>
-      <ion-input
-        type="email"
-        fill="solid"
-        label="Email"
-        labelPlacement="floating"
-        errorText="Invalid email"
-        [(ngModel)]="userEmail"
-        email
-      ></ion-input>
-      <ion-input
-        type="text"
-        fill="solid"
-        label="Name"
-        labelPlacement="floating"
-        errorText="Invalid name"
-        [(ngModel)]="userName"
-      ></ion-input>
-      <ion-input
-        type="password"
-        fill="solid"
-        label="Password"
-        labelPlacement="floating"
-        errorText="Invalid password"
-        [(ngModel)]="userPassword"
-      ></ion-input>
+      <!-- Email Input with Icon -->
+      <ion-item>
+        <ion-icon name="mail-outline" slot="start"></ion-icon>
+        <ion-input
+          type="email"
+          fill="solid"
+          label="Email"
+          labelPlacement="floating"
+          errorText="Invalid email"
+          [(ngModel)]="userEmail"
+          email
+        ></ion-input>
+      </ion-item>
+
+      <!-- Name Input with Icon -->
+      <ion-item>
+        <ion-icon name="person-outline" slot="start"></ion-icon>
+        <ion-input
+          type="text"
+          fill="solid"
+          label="Name"
+          labelPlacement="floating"
+          errorText="Invalid name"
+          [(ngModel)]="userName"
+        ></ion-input>
+      </ion-item>
+
+      <!-- Password Input with Icon -->
+      <ion-item>
+        <ion-icon name="lock-closed-outline" slot="start"></ion-icon>
+        <ion-input
+          type="password"
+          fill="solid"
+          label="Password"
+          labelPlacement="floating"
+          errorText="Invalid password"
+          [(ngModel)]="userPassword"
+        ></ion-input>
+      </ion-item>
 
       <ion-button expand="block" (click)="registerUser()">Register as User</ion-button>
-      <a [routerLink]="['/login']">Login Here</a>
+
+      <div class="center-link">
+        <a [routerLink]="['/login']">Login Here</a>
+      </div>
     </ion-card-content>
   </ion-card>
 
+  <!-- Business Owner Segment -->
   <ion-card *ngIf="selectedSegment === 'business'">
     <ion-card-header>
       <ion-card-title>Register as Business Owner</ion-card-title>
     </ion-card-header>
 
     <ion-card-content>
-      <ion-input
-        type="email"
-        fill="solid"
-        label="Business Email"
-        labelPlacement="floating"
-        errorText="Invalid email"
-        [(ngModel)]="businessEmail"
-        email
-      ></ion-input>
-      <ion-input
-        type="text"
-        fill="solid"
-        label="Business Name"
-        labelPlacement="floating"
-        errorText="Invalid business name"
-        [(ngModel)]="businessName"
-      ></ion-input>
-      <ion-input
-        type="text"
-        fill="solid"
-        label="Business Address"
-        labelPlacement="floating"
-        errorText="Invalid address"
-        [(ngModel)]="businessAddress"
-      ></ion-input>
-      <ion-input
-        type="password"
-        fill="solid"
-        label="Password"
-        labelPlacement="floating"
-        errorText="Invalid password"
-        [(ngModel)]="businessPassword"
-      ></ion-input>
+      <!-- Business Email Input with Icon -->
+      <ion-item>
+        <ion-icon name="mail-outline" slot="start"></ion-icon>
+        <ion-input
+          type="email"
+          fill="solid"
+          label="Business Email"
+          labelPlacement="floating"
+          errorText="Invalid email"
+          [(ngModel)]="businessEmail"
+          email
+        ></ion-input>
+      </ion-item>
+
+      <!-- Business Name Input with Icon -->
+      <ion-item>
+        <ion-icon name="business-outline" slot="start"></ion-icon>
+        <ion-input
+          type="text"
+          fill="solid"
+          label="Business Name"
+          labelPlacement="floating"
+          errorText="Invalid business name"
+          [(ngModel)]="businessName"
+        ></ion-input>
+      </ion-item>
+
+      <!-- Business Address Input with Icon -->
+      <ion-item>
+        <ion-icon name="location-outline" slot="start"></ion-icon>
+        <ion-input
+          type="text"
+          fill="solid"
+          label="Business Address"
+          labelPlacement="floating"
+          errorText="Invalid address"
+          [(ngModel)]="businessAddress"
+        ></ion-input>
+      </ion-item>
+
+      <!-- Password Input with Icon -->
+      <ion-item>
+        <ion-icon name="lock-closed-outline" slot="start"></ion-icon>
+        <ion-input
+          type="password"
+          fill="solid"
+          label="Password"
+          labelPlacement="floating"
+          errorText="Invalid password"
+          [(ngModel)]="businessPassword"
+        ></ion-input>
+      </ion-item>
 
       <ion-button expand="block" (click)="registerBusiness()">Register as Business Owner</ion-button>
-      <a [routerLink]="['/login']">Login Here</a>
+
+      <div class="center-link">
+        <a [routerLink]="['/login']">Login Here</a>
+      </div>
     </ion-card-content>
   </ion-card>
 </ion-content>

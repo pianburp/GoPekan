@@ -1,44 +1,54 @@
 <ion-header [translucent]="true">
-  <ion-toolbar>
-    <ion-title>Login</ion-title>
-  </ion-toolbar>
 </ion-header>
 
 <ion-content [fullscreen]="true">
-  <ion-card>
-    <ion-card-header>
-      <ion-card-title>Login</ion-card-title>
-    </ion-card-header>
+  <div class="center-card">
+    <ion-card>
+      <ion-card-header>
+        <ion-card-title class="custom-title">Login</ion-card-title>
+        <br>
+        <ion-card-subtitle class="ion-text-center">This is where your journey begins!</ion-card-subtitle>
+      </ion-card-header>
 
-    <ion-card-content>
-      <ion-input
-        type="email"
-        fill="solid"
-        label="Email"
-        labelPlacement="floating"
-        errorText="Invalid email"
-        [(ngModel)]="email"
-        email
-      ></ion-input>
-      <ion-input
-        type="password"
-        fill="solid"
-        label="Password"
-        labelPlacement="floating"
-        errorText="Invalid password"
-        [(ngModel)]="password"
-      ></ion-input>
-      <ion-button expand="block" (click)="login()">Login</ion-button>
-      <ion-grid>
-        <ion-row class="ion-align-items-center">
-          <ion-col size="6" class="ion-text-start">
-            <a [routerLink]="['/register']">Register Here</a>
-          </ion-col>
-          <ion-col size="6" class="ion-text-end">
-            <a [routerLink]="['/forgot-password']">Forgot Password?</a>
-          </ion-col>
-        </ion-row>
-      </ion-grid>
-    </ion-card-content>
-  </ion-card>
+      <ion-card-content>
+        <div class="input-container">
+          <ion-icon name="mail-outline"></ion-icon>
+          <ion-input
+            type="email"
+            fill="solid"
+            label="Email"
+            labelPlacement="floating"
+            errorText="Invalid email"
+            [(ngModel)]="email"
+            email
+          ></ion-input>
+        </div>
+
+        <div class="input-container">
+          <ion-icon name="lock-closed-outline"></ion-icon>
+          <ion-input
+            type="password"
+            fill="solid"
+            label="Password"
+            labelPlacement="floating"
+            errorText="Invalid password"
+            [(ngModel)]="password"
+          ></ion-input>
+        </div>
+
+        <ion-button expand="block" (click)="login()">Login</ion-button>
+
+        <ion-grid>
+          <ion-row class="ion-align-items-center">
+            <ion-col size="6" class="ion-text-start">
+              <a [routerLink]="['/register']">Register Here</a>
+            </ion-col>
+            <ion-col size="6" class="ion-text-end">
+              <a [routerLink]="['/forgot-password']">Forgot Password?</a>
+            </ion-col>
+          </ion-row>
+        </ion-grid>
+      </ion-card-content>
+    </ion-card>
+  </div>
 </ion-content>
