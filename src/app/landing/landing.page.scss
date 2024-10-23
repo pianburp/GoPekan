@@ -1,13 +1,18 @@
-.container{
-    text-align: center;
-    position: absolute;
-    left: 0;
-    right: 0;
-    margin-top: 50%;
-    transform: translateY(-50%);
-}
-.bold{
-    font-weight: bolder;
-    font-size: 1.5em;
-    text-align: center;
-}
+.center-content {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;   /* Vertically center */
+    align-items: center;       /* Horizontally center */
+    height: 100%;              /* Full height of ion-content */
+    text-align: center;        /* Center align text */
+  }
+  
+  .center-image {
+    max-width: 100%;           /* Adjust to ensure image responsiveness */
+    height: auto;              /* Maintain aspect ratio */
+  }
+  
+  .bold {
+    font-weight: bold;
+  }
+  

@@ -1,0 +1,29 @@
+<ion-header [translucent]="true">
+  <ion-toolbar>
+    <ion-title>GoPekan</ion-title>
+    <ion-buttons slot="end">
+      <ion-button>
+        <ion-icon name="person-outline" size="large"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+  <ion-toolbar [class.collapsed]="isSearchbarCollapsed">
+    <ion-searchbar></ion-searchbar>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content [fullscreen]="true" scrollEvents="true" (ionScroll)="handleScroll($event)">
+  <ion-card *ngFor="let item of cards">
+    <ion-card-header>
+      <ion-card-title>Card Title {{item}}</ion-card-title>
+      <ion-card-subtitle>Card Subtitle {{item}}</ion-card-subtitle>
+    </ion-card-header>
+  
+    <ion-card-content>
+      Here's a small text description for the card content. Nothing more, nothing less.
+    </ion-card-content>
+  
+    <ion-button fill="clear">Action 1</ion-button>
+    <ion-button fill="clear">Action 2</ion-button>
+  </ion-card>
+</ion-content>

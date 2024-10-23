@@ -1,8 +1,8 @@
 import { Component } from '@angular/core';
 import { Router } from '@angular/router';
-import { AlertController } from '@ionic/angular';
-import { Auth, signInWithEmailAndPassword } from '@angular/fire/auth';
-import { Firestore, doc, getDoc } from '@angular/fire/firestore'; // Import Firestore
+import { AlertController, LoadingController } from '@ionic/angular';
+import { Auth, signInWithEmailAndPassword, sendEmailVerification } from '@angular/fire/auth';
+import { Firestore, doc, getDoc, setDoc } from '@angular/fire/firestore';
 
 @Component({
   selector: 'app-login',
@@ -17,42 +17,93 @@ export class LoginPage {
     private auth: Auth,
     private router: Router,
     private alertController: AlertController,
-    private firestore: Firestore // Inject Firestore
+    private loadingController: LoadingController,
+    private firestore: Firestore
   ) {}
 
   async login() {
+    const loading = await this.loadingController.create({
+      message: 'Please wait...',
+    });
+    await loading.present();
+
     try {
       // Authenticate the user
-      const userCredential = await signInWithEmailAndPassword(this.auth, this.email, this.password);
-      console.log('Logged in user:', userCredential.user);
+      const userCredential = await signInWithEmailAndPassword(
+        this.auth, 
+        this.email, 
+        this.password
+      );
+      
+      const user = userCredential.user;
+
+      // Check if email is verified
+      if (!user.emailVerified) {
+        await this.auth.signOut(); // Sign out unverified user
+        await loading.dismiss();
+        await this.presentVerificationAlert(user.email);
+        return;
+      }
 
       // Fetch user role from Firestore
-      const userDocRef = doc(this.firestore, `users/${userCredential.user.uid}`);
+      const userDocRef = doc(this.firestore, `users/${user.uid}`);
       const userDoc = await getDoc(userDocRef);
 
       if (userDoc.exists()) {
         const userData = userDoc.data();
-        const role = userData['role']; // Assuming 'role' is a field in Firestore
+        
+        // Update emailVerified status in Firestore if needed
+        if (userData['emailVerified'] === false) {
+          await setDoc(userDocRef, { emailVerified: true }, { merge: true });
+        }
+
+        const role = userData['type']; // Changed from 'role' to 'type' to match your registration
 
         // Role-based redirection
-        if (role === 'user') {
-          this.router.navigate(['/user-home']); // Redirect to User home page
-        } else if (role === 'business-owner') {
-          this.router.navigate(['/business-owner-home']); // Redirect to Business Owner home page
-        } else if (role === 'admin') {
-          this.router.navigate(['/admin-home']); // Redirect to Admin home page
-        } else {
-          console.error('Invalid role');
-          this.presentAlert('Login Error', 'User role is not recognized.');
+        await loading.dismiss();
+        
+        switch (role) {
+          case 'user':
+            this.router.navigate(['/user/home']);
+            break;
+          case 'business':
+            this.router.navigate(['/business-owner/home']);
+            break;
+          case 'admin':
+            this.router.navigate(['/admin/home']);
+            break;
+          default:
+            console.error('Invalid role');
+            this.presentAlert('Login Error', 'User role is not recognized.');
         }
       } else {
+        await loading.dismiss();
         console.error('No such document for the user');
-        this.presentAlert('Login Error', 'User role information not found.');
+        this.presentAlert('Login Error', 'User information not found.');
       }
 
-    } catch (error) {
+    } catch (error: any) {
+      await loading.dismiss();
       console.error('Login error', error);
-      this.presentAlert('Login Failed', 'Please check your email and password and try again.');
+      let errorMessage = 'Please check your email and password and try again.';
+      
+      // Handle specific Firebase auth errors
+      switch (error.code) {
+        case 'auth/user-not-found':
+          errorMessage = 'No account found with this email address.';
+          break;
+        case 'auth/wrong-password':
+          errorMessage = 'Incorrect password.';
+          break;
+        case 'auth/invalid-email':
+          errorMessage = 'Invalid email address.';
+          break;
+        case 'auth/user-disabled':
+          errorMessage = 'This account has been disabled.';
+          break;
+      }
+      
+      this.presentAlert('Login Failed', errorMessage);
     }
   }
 
@@ -63,5 +114,57 @@ export class LoginPage {
       buttons: ['OK']
     });
     await alert.present();
+  }
+
+  async presentVerificationAlert(email: string | null) {
+    const alert = await this.alertController.create({
+      header: 'Email Not Verified',
+      message: 'Please verify your email address before logging in. Would you like us to send a new verification email?',
+      buttons: [
+        {
+          text: 'Cancel',
+          role: 'cancel'
+        },
+        {
+          text: 'Resend Email',
+          handler: () => {
+            this.resendVerificationEmail();
+          }
+        }
+      ]
+    });
+    await alert.present();
+  }
+
+  async resendVerificationEmail() {
+    try {
+      const user = this.auth.currentUser;
+      if (user) {
+        await sendEmailVerification(user);
+        this.presentAlert(
+          'Email Sent', 
+          'A new verification email has been sent. Please check your inbox and spam folder.'
+        );
+      } else {
+        // If no user is signed in, we need to sign them in first
+        const userCredential = await signInWithEmailAndPassword(
+          this.auth,
+          this.email,
+          this.password
+        );
+        await sendEmailVerification(userCredential.user);
+        await this.auth.signOut(); // Sign out again after sending verification
+        this.presentAlert(
+          'Email Sent', 
+          'A new verification email has been sent. Please check your inbox and spam folder.'
+        );
+      }
+    } catch (error) {
+      console.error('Error sending verification email:', error);
+      this.presentAlert(
+        'Error',
+        'Failed to send verification email. Please try again later.'
+      );
+    }
   }
 }

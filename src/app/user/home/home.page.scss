@@ -25,3 +25,15 @@
 #container a {
   text-decoration: none;
 }
+ion-title{
+  font-size: 1.5em;
+  font-weight: bolder;
+}
+ion-toolbar {
+  transition: all 0.35s ease;
+  
+  &.collapsed {
+    margin-top: -56px;
+    opacity: 0;
+  }
+}

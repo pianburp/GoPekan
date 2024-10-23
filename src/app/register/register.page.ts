@@ -1,7 +1,13 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { AlertController } from '@ionic/angular';
-import { Auth, createUserWithEmailAndPassword } from '@angular/fire/auth';
+import { 
+  Auth, 
+  createUserWithEmailAndPassword, 
+  sendEmailVerification, 
+  signOut,
+  User
+} from '@angular/fire/auth';
 import { Firestore, doc, setDoc } from '@angular/fire/firestore';
 
 @Component({
@@ -15,7 +21,6 @@ export class RegisterPage implements OnInit {
   userEmail: string = '';
   userName: string = '';
   userPassword: string = '';
-
   businessEmail: string = '';
   businessName: string = '';
   businessAddress: string = '';
@@ -37,12 +42,20 @@ export class RegisterPage implements OnInit {
         this.userEmail,
         this.userPassword
       );
+
+      // Send verification email
+      await sendEmailVerification(userCredential.user);
+
       await setDoc(doc(this.firestore, 'users', userCredential.user.uid), {
         email: this.userEmail,
         name: this.userName,
-        type: 'user'
+        type: 'user',
+        emailVerified: false
       });
-      this.router.navigate(['/home']);
+
+      await signOut(this.auth); // Sign out user until they verify email
+      await this.presentVerificationAlert();
+      this.router.navigate(['/login']);
     } catch (error) {
       console.error(error);
       this.presentAlert('Registration Failed', 'Please check your information and try again.');
@@ -56,13 +69,21 @@ export class RegisterPage implements OnInit {
         this.businessEmail,
         this.businessPassword
       );
+
+      // Send verification email
+      await sendEmailVerification(userCredential.user);
+
       await setDoc(doc(this.firestore, 'users', userCredential.user.uid), {
         email: this.businessEmail,
         name: this.businessName,
         address: this.businessAddress,
-        type: 'business'
+        type: 'business',
+        emailVerified: false
       });
-      this.router.navigate(['/home']);
+
+      await signOut(this.auth); // Sign out user until they verify email
+      await this.presentVerificationAlert();
+      this.router.navigate(['/login']);
     } catch (error) {
       console.error(error);
       this.presentAlert('Registration Failed', 'Please check your information and try again.');
@@ -73,6 +94,15 @@ export class RegisterPage implements OnInit {
     const alert = await this.alertController.create({
       header,
       message,
+      buttons: ['OK']
+    });
+    await alert.present();
+  }
+
+  async presentVerificationAlert() {
+    const alert = await this.alertController.create({
+      header: 'Verify Your Email',
+      message: 'A verification link has been sent to your email address. Please verify your email before logging in.',
       buttons: ['OK']
     });
     await alert.present();
