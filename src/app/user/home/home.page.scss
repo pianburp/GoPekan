@@ -26,8 +26,9 @@
   text-decoration: none;
 }
 ion-title{
-  font-size: 1.5em;
+  font-size: 2em;
   font-weight: bolder;
+  color: #9ac1fc;
 }
 ion-toolbar {
   transition: all 0.35s ease;
@@ -35,5 +36,39 @@ ion-toolbar {
   &.collapsed {
     margin-top: -56px;
     opacity: 0;
+  }
+}
+ion-toolbar {
+  transition: all 0.3s ease;
+  
+  &.collapsed {
+    margin-top: -56px; // Adjust this value based on your searchbar height
+    opacity: 0;
+  }
+}
+
+ion-popover {
+  --width: 200px;
+  
+  ion-list {
+    margin: 0;
+    padding: 0;
+  }
+
+  ion-item {
+    --padding-start: 16px;
+    --padding-end: 16px;
+    
+    ion-icon {
+      margin-right: 8px;
+    }
+  }
+}
+
+ion-card {
+  margin: 16px;
+  
+  ion-button {
+    margin: 0 8px 8px;
   }
 }

@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { LoadingController, AlertController, PopoverController } from '@ionic/angular';
 import { Auth } from '@angular/fire/auth';
@@ -6,13 +6,13 @@ import { signOut } from '@angular/fire/auth';
 
 @Component({
   selector: 'app-home',
-  templateUrl: 'home.page.html',
-  styleUrls: ['home.page.scss'],
+  templateUrl: './home.page.html',
+  styleUrls: ['./home.page.scss'],
 })
-export class HomePage {
+export class HomePage{
   isSearchbarCollapsed = false;
   lastScrollPosition = 0;
-  cards = Array(50).fill(0).map((_, index) => index + 1); // Generate 50 cards
+  cards = Array(3).fill(0).map((_, index) => index + 1);
 
   constructor(
     private auth: Auth,
@@ -20,15 +20,18 @@ export class HomePage {
     private loadingCtrl: LoadingController,
     private alertCtrl: AlertController,
     private popoverController: PopoverController // Add PopoverController
-  ) {}
+  ) { }
 
-  async navigateToProfile() {
-    // Dismiss popover first
-    const popover = await this.popoverController.getTop();
-    if (popover) {
-      await popover.dismiss();
+  handleScroll(event: any) {
+    const currentScrollPosition = event.detail.scrollTop;
+    
+    if (currentScrollPosition > this.lastScrollPosition && currentScrollPosition > 50) {
+      this.isSearchbarCollapsed = true;
+    } else if (currentScrollPosition < this.lastScrollPosition) {
+      this.isSearchbarCollapsed = false;
     }
-    this.router.navigate(['/user/profile']);
+    
+    this.lastScrollPosition = currentScrollPosition;
   }
 
   async logout() {
@@ -60,15 +63,22 @@ export class HomePage {
     }
   }
 
-  handleScroll(event: any) {
-    const currentScrollPosition = event.detail.scrollTop;
-    
-    if (currentScrollPosition > this.lastScrollPosition && currentScrollPosition > 50) {
-      this.isSearchbarCollapsed = true;
-    } else if (currentScrollPosition < this.lastScrollPosition) {
-      this.isSearchbarCollapsed = false;
+  async navigateToProfile() {
+    // Dismiss popover first
+    const popover = await this.popoverController.getTop();
+    if (popover) {
+      await popover.dismiss();
     }
-    
-    this.lastScrollPosition = currentScrollPosition;
+    this.router.navigate(['/business/profile']);
   }
+
+  async navigateToDashboard() {
+    // Dismiss popover first
+    const popover = await this.popoverController.getTop();
+    if (popover) {
+      await popover.dismiss();
+    }
+    this.router.navigate(['/business/profile']);
+  }
+
 }

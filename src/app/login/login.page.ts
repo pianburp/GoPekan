@@ -67,7 +67,7 @@ export class LoginPage {
             this.router.navigate(['/user/home']);
             break;
           case 'business':
-            this.router.navigate(['/business-owner/home']);
+            this.router.navigate(['/business/home']);
             break;
           case 'admin':
             this.router.navigate(['/admin/home']);

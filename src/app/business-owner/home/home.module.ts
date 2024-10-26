@@ -4,17 +4,17 @@ import { FormsModule } from '@angular/forms';
 
 import { IonicModule } from '@ionic/angular';
 
-import { VerifyEmailPageRoutingModule } from './verify-email-routing.module';
+import { HomePageRoutingModule } from './home-routing.module';
 
-import { VerifyEmailPage } from './verify-email.page';
+import { HomePage } from './home.page';
 
 @NgModule({
   imports: [
     CommonModule,
     FormsModule,
     IonicModule,
-    VerifyEmailPageRoutingModule
+    HomePageRoutingModule
   ],
-  declarations: [VerifyEmailPage]
+  declarations: [HomePage]
 })
-export class VerifyEmailPageModule {}
+export class HomePageModule {}

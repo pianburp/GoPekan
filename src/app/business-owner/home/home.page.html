@@ -19,6 +19,10 @@
         <ion-icon name="person-outline" slot="start"></ion-icon>
         <ion-label>Profile</ion-label>
       </ion-item>
+      <ion-item button (click)="navigateToDashboard()">
+        <ion-icon name="bar-chart-outline"></ion-icon>
+        <ion-label>Dashboard</ion-label>
+      </ion-item>
       <ion-item button (click)="logout()">
         <ion-icon name="log-out-outline" slot="start"></ion-icon>
         <ion-label>Logout</ion-label>
@@ -26,7 +30,7 @@
     </ion-list>
   </ng-template>
 </ion-popover>
- 
+
 <ion-content [fullscreen]="true" scrollEvents="true" (ionScroll)="handleScroll($event)">
   <ion-card *ngFor="let item of cards">
     <ion-card-header>
@@ -47,4 +51,6 @@
       Share
     </ion-button>
   </ion-card>
+  <br>
+  <ion-button expand="block"> Add restaurant </ion-button>
 </ion-content>
