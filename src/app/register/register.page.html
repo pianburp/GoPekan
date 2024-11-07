@@ -2,7 +2,7 @@
   <ion-toolbar>
     <ion-segment [(ngModel)]="selectedSegment">
       <ion-segment-button value="user">
-        <ion-label>User</ion-label>
+        <ion-label>User</ion-label> 
       </ion-segment-button>
       <ion-segment-button value="business">
         <ion-label>Business Owner</ion-label>
@@ -14,7 +14,7 @@
 <ion-content [fullscreen]="true">
   <!-- User Segment -->
   <ion-card *ngIf="selectedSegment === 'user'">
-    <ion-img src="assets\user-vector.png"></ion-img>
+    <ion-img src="assets\60111.jpg"></ion-img>
     <ion-card-header>
       <ion-card-title>Register as User</ion-card-title>
     </ion-card-header>
@@ -70,7 +70,7 @@
 
   <!-- Business Owner Segment -->
   <ion-card *ngIf="selectedSegment === 'business'">
-    <ion-img src="assets\user-vector.png"></ion-img>
+    <ion-img src="assets\60168.jpg"></ion-img>
     <ion-card-header>
       <ion-card-title>Register as Business Owner</ion-card-title>
     </ion-card-header>

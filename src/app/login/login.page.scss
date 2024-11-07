@@ -1,42 +1,94 @@
-.custom-title {
-    text-align: center;
-    font-size: 4em;
-    font-weight: bold;
-  }
-  .center-card {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    height: 100vh; /* Full viewport height to center vertically */
-  }
-  
+/* login.page.scss */
+ion-content {
+  --background: #1a1a1a;
+
   ion-card {
-    width: 100%;
-    max-width: 600px; /* Optional: Limit the card's max width */
-    margin: 0 16px; /* Optional: Some margin on the sides for smaller screens */
+    margin: 0;
+    background: #1a1a1a;
+    box-shadow: none;
+
+    &.login-card {
+      min-height: 100vh;
+      opacity: 0;
+      transform: translateY(50px);
+      transition: all 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+      visibility: hidden;
+
+      &.visible {
+        opacity: 1;
+        transform: translateY(0);
+        visibility: visible;
+      }
+    }
   }
-  .center-card {
+
+  .container {
+    min-height: 100vh;
     display: flex;
-    justify-content: center;
     align-items: center;
-    height: 100vh; /* Full viewport height for vertical centering */
+    justify-content: center;
+
+    .content-wrapper {
+      text-align: center;
+
+      ion-img {
+        width: 80%; /* Increased from max-width: 200px */
+        max-width: 400px; /* Added maximum width constraint */
+        margin: 0 auto;
+        height: auto;
+      }
+
+      .bold {
+        font-weight: bolder;
+        margin-top: 20px;
+        color: cornflowerblue;
+      }
+    }
   }
-  
-  
-  /* Input container for aligning icons and inputs */
+
+  .custom-title {
+    font-size: 32px;
+    font-weight: bold;
+    color: white;
+  }
+
   .input-container {
     display: flex;
     align-items: center;
-    margin-bottom: 20px; /* Add space between inputs */
+    margin-bottom: 16px;
+
+    ion-icon {
+      margin-right: 10px;
+      color: #666;
+    }
+
+    ion-input {
+      --background: transparent;
+      --padding-start: 0;
+      --border-color: #666;
+      --color: white;
+    }
   }
-  
-  ion-icon {
-    margin-right: 10px; /* Space between icon and input */
-    font-size: 24px;    /* Icon size */
-    color: #999;        /* Optional: Change icon color */
+
+  ion-button {
+    margin-top: 20px;
+    --background: #4285f4;
   }
-  
-  ion-input {
-    flex-grow: 1;       /* Make input take the remaining space */
+
+  a {
+    text-decoration: none;
+    color: #4285f4;
+    font-size: 14px;
   }
-  
+}
+
+/* Optional: Add responsive adjustments */
+@media (min-width: 768px) {
+  ion-content {
+    .login-card {
+      width: 400px;
+      margin: 50px auto;
+      border-radius: 8px;
+    }
+  }
+}

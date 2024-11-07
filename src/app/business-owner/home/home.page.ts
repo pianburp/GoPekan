@@ -78,7 +78,7 @@ export class HomePage{
     if (popover) {
       await popover.dismiss();
     }
-    this.router.navigate(['/business/profile']);
+    this.router.navigate(['/business/dashboard']);
   }
 
 }

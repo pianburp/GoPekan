@@ -12,16 +12,12 @@ const routes: Routes = [
   },
   {
     path: '',
-    redirectTo: 'landing',
+    redirectTo: 'login',
     pathMatch: 'full'
   },
   {
     path: 'forgot-password',
     loadChildren: () => import('./forgot-password/forgot-password.module').then( m => m.ForgotPasswordPageModule)
-  },
-  {
-    path: 'landing',
-    loadChildren: () => import('./landing/landing.module').then( m => m.LandingPageModule)
   },
   {
     path: 'user/home',
@@ -38,6 +34,10 @@ const routes: Routes = [
   {
     path: 'business/profile',
     loadChildren: () => import('./business-owner/profile/profile.module').then( m => m.ProfilePageModule)
+  },
+  {
+    path: 'business/dashboard',
+    loadChildren: () => import('./business-owner/dashboard/dashboard.module').then( m => m.DashboardPageModule)
   }
 ];
 

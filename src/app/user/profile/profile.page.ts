@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { Auth, getAuth, onAuthStateChanged, sendPasswordResetEmail } from '@angular/fire/auth';
 import { Firestore, doc, getDoc, updateDoc } from '@angular/fire/firestore';
 import { AlertController } from '@ionic/angular';
-import { Router } from '@angular/router';
+import { Router } from '@angular/router'; 
 
 
 @Component({

@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, ElementRef, ViewChild  } from '@angular/core';
 import { Router } from '@angular/router';
 import { AlertController, LoadingController } from '@ionic/angular';
 import { Auth, signInWithEmailAndPassword, sendEmailVerification } from '@angular/fire/auth';
@@ -10,6 +10,7 @@ import { Firestore, doc, getDoc, setDoc } from '@angular/fire/firestore';
   styleUrls: ['./login.page.scss'],
 })
 export class LoginPage {
+  isVisible = false;
   email: string = '';
   password: string = '';
 
@@ -165,6 +166,19 @@ export class LoginPage {
         'Error',
         'Failed to send verification email. Please try again later.'
       );
+    }
+  }
+  onScroll(event: any) {
+    const element = event.target;
+    const loginCard = element.querySelector('.login-card');
+    if (!loginCard) return;
+
+    const rect = loginCard.getBoundingClientRect();
+    const windowHeight = window.innerHeight;
+    
+    // Check if element is in viewport
+    if (rect.top <= windowHeight * 0.75) {
+      this.isVisible = true;
     }
   }
 }
