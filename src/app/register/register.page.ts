@@ -1,48 +1,24 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { AlertController } from '@ionic/angular';
-import { 
-  Auth, 
-  createUserWithEmailAndPassword, 
-  sendEmailVerification, 
-  signOut,
-  User
-} from '@angular/fire/auth';
+import { Auth, createUserWithEmailAndPassword, sendEmailVerification, signOut, User} from '@angular/fire/auth';
 import { Firestore, doc, setDoc } from '@angular/fire/firestore';
 import { AnimationController } from '@ionic/angular';
-import { trigger, transition, style, animate } from '@angular/animations';
 
 @Component({
   selector: 'app-register',
   templateUrl: './register.page.html',
-  styleUrls: ['./register.page.scss'],
-  animations: [
-    trigger('cardAnimation', [
-      transition(':enter', [
-        style({ 
-          transform: 'translateY(100px)',
-          opacity: 0 
-        }),
-        animate('500ms ease-out', 
-          style({ 
-            transform: 'translateY(0)',
-            opacity: 1 
-          })
-        )
-      ]),
-      transition(':leave', [
-        animate('500ms ease-in', 
-          style({ 
-            transform: 'translateY(100px)',
-            opacity: 0 
-          })
-        )
-      ])
-    ])
-  ]
+  styleUrls: ['./register.page.scss']
 })
 export class RegisterPage implements OnInit {
-  selectedSegment: string = 'user';
+  selectedSegment = 'user';
+  slideDirection = 'slide-left';
+
+  onSegmentChange(event: any) {
+    //animation card
+    this.slideDirection = event.detail.value === 'user' ? 'slide-right' : 'slide-left';
+    this.selectedSegment = event.detail.value;
+  }
   
   userEmail: string = '';
   userName: string = '';
@@ -133,18 +109,5 @@ export class RegisterPage implements OnInit {
       buttons: ['OK']
     });
     await alert.present();
-  }
-  async animateCard(card: HTMLElement) {
-    const animation = this.animationCtrl
-      .create()
-      .addElement(card)
-      .duration(300)
-      .iterations(1)
-      .fromTo('transform', 'translateY(0px)', 'translateY(-10px)')
-      .fromTo('box-shadow', 
-        '0 4px 6px rgba(0, 0, 0, 0.1)', 
-        '0 8px 12px rgba(0, 0, 0, 0.2)');
-
-    await animation.play();
   }
 }

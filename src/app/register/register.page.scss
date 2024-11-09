@@ -1,34 +1,49 @@
-.center-link {
-    display: flex;
-    justify-content: center;
-    margin-top: 10px; /* Add some space above if needed */
+
+@keyframes slideFromRight {
+  from {
+    transform: translateX(100%);
+    opacity: 0;
   }
-  
-  a {
-    font-size: 16px; /* Adjust font size */
-    color: #007bff;  /* Adjust the link color */
-    text-decoration: none; /* Remove underline */
-  }
-ion-card-title{
-  font-size: 2.4em;
-}
-/* register.page.scss */
-.animate-card {
-  transition: all 0.3s ease;
-  
-  &:hover {
-    cursor: pointer;
+  to {
+    transform: translateX(0);
+    opacity: 1;
   }
 }
 
+@keyframes slideFromLeft {
+  from {
+    transform: translateX(-100%);
+    opacity: 0;
+  }
+  to {
+    transform: translateX(0);
+    opacity: 1;
+  }
+}
+
+// Animation classes
+.slide-right {
+  animation: slideFromLeft 0.3s ease-out forwards;
+}
+
+.slide-left {
+  animation: slideFromRight 0.3s ease-out forwards;
+}
+
+// Optional: Add some basic card styling
 ion-card {
   margin: 16px;
-  border-radius: 12px;
+  border-radius: 8px;
   overflow: hidden;
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
 }
 
+// Center the login link
 .center-link {
-  margin-top: 16px;
   text-align: center;
+  margin-top: 16px;
+  
+  a {
+    text-decoration: none;
+    color: var(--ion-color-primary);
+  }
 }

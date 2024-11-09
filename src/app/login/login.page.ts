@@ -1,4 +1,4 @@
-import { Component, ElementRef, ViewChild  } from '@angular/core';
+import { Component, ElementRef, ViewChild } from '@angular/core';
 import { Router } from '@angular/router';
 import { AlertController, LoadingController } from '@ionic/angular';
 import { Auth, signInWithEmailAndPassword, sendEmailVerification } from '@angular/fire/auth';
@@ -11,6 +11,7 @@ import { Firestore, doc, getDoc, setDoc } from '@angular/fire/firestore';
 })
 export class LoginPage {
   isVisible = false;
+  showScrollIndicator = true; // New property for scroll indicator
   email: string = '';
   password: string = '';
 
@@ -21,6 +22,23 @@ export class LoginPage {
     private loadingController: LoadingController,
     private firestore: Firestore
   ) {}
+
+  onScroll(event: any) {
+    const element = event.target;
+    const loginCard = element.querySelector('.login-card');
+    if (!loginCard) return;
+
+    const rect = loginCard.getBoundingClientRect();
+    const windowHeight = window.innerHeight;
+    
+    // Check if element is in viewport
+    if (rect.top <= windowHeight * 0.75) {
+      this.isVisible = true;
+      this.showScrollIndicator = false; // Hide scroll indicator when login card is visible
+    } else {
+      this.showScrollIndicator = true; // Show scroll indicator when login card is not visible
+    }
+  }
 
   async login() {
     const loading = await this.loadingController.create({
@@ -168,17 +186,5 @@ export class LoginPage {
       );
     }
   }
-  onScroll(event: any) {
-    const element = event.target;
-    const loginCard = element.querySelector('.login-card');
-    if (!loginCard) return;
 
-    const rect = loginCard.getBoundingClientRect();
-    const windowHeight = window.innerHeight;
-    
-    // Check if element is in viewport
-    if (rect.top <= windowHeight * 0.75) {
-      this.isVisible = true;
-    }
-  }
 }

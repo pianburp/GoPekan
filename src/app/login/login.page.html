@@ -5,14 +5,15 @@
       <div class="content-wrapper">
         <ion-img src="assets\rb_12186.png"></ion-img>
         <ion-title class="bold">
-          Get to know authentic reviews with <br> GoPekan
+          Get to know authentic <br> reviews with  GoPekan
         </ion-title>
-        <ion-text>
-          this is where 
-        </ion-text>
       </div>
     </div>
   </ion-card>
+  
+  <div class="scroll-indicator" *ngIf="showScrollIndicator">
+    <ion-icon name="chevron-down-outline"></ion-icon>
+  </div>
 
   <!-- Second card -->
   <ion-card class="login-card" [class.visible]="isVisible">
