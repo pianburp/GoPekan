@@ -1,4 +1,6 @@
+/* register.page.scss */
 
+// Animation keyframes
 @keyframes slideFromRight {
   from {
     transform: translateX(100%);
@@ -30,11 +32,34 @@
   animation: slideFromRight 0.3s ease-out forwards;
 }
 
-// Optional: Add some basic card styling
+// Card styling
 ion-card {
   margin: 16px;
   border-radius: 8px;
   overflow: hidden;
+
+  ion-card-header {
+    text-align: center;
+    padding: 24px 16px; // Add more vertical padding
+    
+    ion-card-title {
+      font-size: 24px;
+      font-weight: bolder;
+      letter-spacing: 0.5px;
+      color: var(--ion-color-dark);
+    }
+  }
+
+  // Add a subtle border bottom to header
+  ion-card-header::after {
+    content: '';
+    display: block;
+    width: 70px;
+    height: 1px;
+    background: var(--ion-color-success);
+    margin: 12px auto 0;
+    border-radius: 2px;
+  }
 }
 
 // Center the login link
