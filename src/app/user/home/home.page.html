@@ -26,9 +26,9 @@
     </ion-list>
   </ng-template>
 </ion-popover>
- 
+
 <ion-content [fullscreen]="true" scrollEvents="true" (ionScroll)="handleScroll($event)">
-  <ion-card *ngFor="let item of cards">
+  <ion-card *ngFor="let item of cards" class="scroll-card">
     <ion-card-header>
       <ion-card-title>Card Title {{item}}</ion-card-title>
       <ion-card-subtitle>Card Subtitle {{item}}</ion-card-subtitle>
