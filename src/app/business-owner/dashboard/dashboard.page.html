@@ -1,13 +1,35 @@
-<ion-header [translucent]="true">
+<!-- dashboard.page.html -->
+<ion-header [translucent]="true" class="animate-item">
   <ion-toolbar>
-    <ion-title>dashboard</ion-title>
+    <ion-title (click)="navigateToHome()">GoPekan</ion-title>
   </ion-toolbar>
 </ion-header>
 
 <ion-content [fullscreen]="true">
-  <ion-header collapse="condense">
-    <ion-toolbar>
-      <ion-title size="large">dashboard</ion-title>
-    </ion-toolbar>
-  </ion-header>
+  <br>
+  <ion-title color="light">My <br> Dashboard</ion-title>
+  <ion-card>
+    <ion-card-header>
+      <ion-card-subtitle>Performance Overview</ion-card-subtitle>
+      <ion-card-title>Previous month report</ion-card-title>
+    </ion-card-header>
+    <ion-card-content>
+      <div class="chart-container">
+        <ngx-charts-line-chart
+          [results]="chartData"
+          [xAxis]="true"
+          [yAxis]="true"
+          [legend]="true"
+          [showXAxisLabel]="true"
+          [showYAxisLabel]="true"
+          [xAxisLabel]="'Week'"
+          [yAxisLabel]="'Revenue ($)'"
+          [scheme]="colorScheme"
+          [autoScale]="true"
+          [animations]="true"
+          (select)="onSelect($event)">
+        </ngx-charts-line-chart>
+      </div>
+    </ion-card-content>
+  </ion-card>
 </ion-content>

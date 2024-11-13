@@ -32,7 +32,6 @@
   animation: slideFromRight 0.3s ease-out forwards;
 }
 
-// Card styling
 ion-card {
   margin: 16px;
   border-radius: 8px;
@@ -40,7 +39,7 @@ ion-card {
 
   ion-card-header {
     text-align: center;
-    padding: 24px 16px; // Add more vertical padding
+    padding: 24px 16px; 
     
     ion-card-title {
       font-size: 24px;

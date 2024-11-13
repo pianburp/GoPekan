@@ -1,0 +1,113 @@
+ion-header ion-title {
+  font-size: 2em;
+  font-weight: bolder;
+  color: #9ac1fc;
+  animation-delay: 0.1s;
+}
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+ion-card {
+  margin: 16px;
+  border-radius: 8px;
+  overflow: hidden;
+  animation: fadeIn 0.8s ease-out;
+
+  ion-card-header {
+    text-align: center;
+    padding: 24px 16px; 
+    
+    ion-card-title {
+      font-size: 32px;
+      font-weight: bolder;
+      letter-spacing: 0.5px;
+      color: var(--ion-color-dark);
+    }
+  }
+
+  // Add a subtle border bottom to header
+  ion-card-header::after {
+    content: '';
+    display: block;
+    width: 70px;
+    height: 1px;
+    background: var(--ion-color-success);
+    margin: 12px auto 0;
+    border-radius: 2px;
+  }
+}
+
+.fade-in {
+  animation: fadeIn 0.8s ease-out;
+}
+ion-item:nth-child(1) {animation-delay: 0.4s;}
+ion-item:nth-child(2) {animation-delay: 0.5s;}
+ion-item:nth-child(3) { animation-delay: 0.6s; }
+ion-item:nth-child(4) { animation-delay: 0.7s; }
+
+ion-textarea.custom {
+  --background: #373737;
+  --color: #fff;
+  --padding-end: 10px;
+  --padding-start: 10px;
+  --placeholder-color: #ddd;
+  --placeholder-opacity: 0.8;
+}
+.animate-item {
+  will-change: transform, opacity;
+  
+  // Prevent flickering
+  backface-visibility: hidden;
+  -webkit-font-smoothing: antialiased;
+  
+  // Add transition for smoother animations
+  transition: all 0.4s ease-out;
+}
+
+// Optional: Add responsive behavior
+@media (prefers-reduced-motion: reduce) {
+  .animate-item {
+    animation: none !important;
+    transition: none !important;
+  }
+}
+
+// Optional: Add some spacing between items
+ion-item.animate-item {
+  margin-bottom: 8px;
+}
+
+// Optional: Add some hover effects
+ion-button.animate-item {
+  transition: transform 0.2s ease;
+  
+  &:hover {
+    transform: translateY(-2px);
+  }
+}
+ion-button {
+  --color: #ffffff;
+  --border-radius: 8px;
+  
+  // Optional additional button styling
+  --padding-top: 10px;
+  --padding-bottom: 10px;
+  
+  // Add margin if needed
+  margin: 16px 0;
+  
+  // Optional: Add transition for hover effects
+  transition: transform 0.2s ease;
+  
+  &:hover {
+    transform: translateY(-2px);
+  }
+}

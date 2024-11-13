@@ -38,6 +38,10 @@ const routes: Routes = [
   {
     path: 'business/dashboard',
     loadChildren: () => import('./business-owner/dashboard/dashboard.module').then( m => m.DashboardPageModule)
+  },
+  {
+    path: 'business/add-restaurant',
+    loadChildren: () => import('./business-owner/add-restaurant/add-restaurant.module').then( m => m.AddRestaurantPageModule)
   }
 ];
 
