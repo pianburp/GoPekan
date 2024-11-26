@@ -1,3 +1,4 @@
+<!-- home.page.html -->
 <ion-header [translucent]="true">
   <ion-toolbar>
     <ion-title>GoPekan</ion-title>
@@ -12,7 +13,23 @@
   </ion-toolbar>
 </ion-header>
 
-<ion-popover trigger="profile-btn" trigger-action="click">
+<ion-content [scrollEvents]="true" (ionScroll)="handleScroll($event)">
+  <div class="ion-padding">
+    <div class="cards-container">
+      <ion-card *ngFor="let restaurant of restaurants" class="restaurant-card">
+        <ion-card-header>
+          <ion-card-title>{{ restaurant.name }}</ion-card-title>
+        </ion-card-header>
+        <ion-card-content>
+          {{ restaurant.desc }}
+        </ion-card-content>
+      </ion-card>
+    </div>
+  </div>
+</ion-content>
+
+<!-- Profile Popover -->
+<ion-popover trigger="profile-btn" [dismissOnSelect]="true">
   <ng-template>
     <ion-list>
       <ion-item button (click)="navigateToProfile()">
@@ -26,25 +43,3 @@
     </ion-list>
   </ng-template>
 </ion-popover>
-
-<ion-content [fullscreen]="true" scrollEvents="true" (ionScroll)="handleScroll($event)">
-  <ion-card *ngFor="let item of cards" class="scroll-card">
-    <ion-card-header>
-      <ion-card-title>Restaurant {{item}}</ion-card-title>
-      <ion-card-subtitle>Restaurant {{item}}</ion-card-subtitle>
-    </ion-card-header>
-  
-    <ion-card-content>
-      Here's a small text description for the card content. Nothing more, nothing less.
-    </ion-card-content>
-  
-    <ion-button fill="clear">
-      <ion-icon name="heart-outline" slot="start"></ion-icon>
-      Like
-    </ion-button>
-    <ion-button fill="clear">
-      <ion-icon name="share-outline" slot="start"></ion-icon>
-      Share
-    </ion-button>
-  </ion-card>
-</ion-content>

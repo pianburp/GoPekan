@@ -1,37 +1,26 @@
-import { Component, AfterViewInit } from '@angular/core';
+// home.page.ts
+import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { LoadingController, AlertController, PopoverController } from '@ionic/angular';
 import { Auth } from '@angular/fire/auth';
 import { signOut } from '@angular/fire/auth';
 import { Platform } from '@ionic/angular';
-import { trigger, transition, style, animate, query, stagger } from '@angular/animations';
+import { Firestore, collection, getDocs } from '@angular/fire/firestore';
+
+interface Restaurant {
+  name: string;
+  desc: string;
+}
 
 @Component({
   selector: 'app-home',
   templateUrl: 'home.page.html',
   styleUrls: ['home.page.scss'],
-  animations: [
-    trigger('fadeIn', [
-      transition(':enter', [
-        query('.animate-item', [
-          style({ opacity: 0, transform: 'translateY(20px)' }),
-          stagger(50, [
-            animate('400ms cubic-bezier(0.4, 0, 0.2, 1)', 
-              style({ opacity: 1, transform: 'translateY(0)' })
-            )
-          ])
-        ], { optional: true })
-      ])
-    ])
-  ]
 })
-export class HomePage implements AfterViewInit {
-  isSearchbarCollapsed = false;
-  lastScrollPosition = 0;
-  scrollThreshold = 50;
-  scrollDebounceTimer: any;
-  cards = Array(50).fill(0).map((_, index) => index + 1);
-  observer: IntersectionObserver | null = null;
+export class HomePage implements OnInit {
+  restaurants: Restaurant[] = [];
+  isSearchbarCollapsed: boolean = false;
+  lastScrollPosition: number = 0;
 
   constructor(
     private auth: Auth,
@@ -39,42 +28,54 @@ export class HomePage implements AfterViewInit {
     private loadingCtrl: LoadingController,
     private alertCtrl: AlertController,
     private popoverController: PopoverController,
-    private platform: Platform
-  ) {
-    this.platform.ready().then(() => {
+    private platform: Platform,
+    private firestore: Firestore
+  ) { }
+
+  async ngOnInit() {
+    await this.loadRestaurants();
+  }
+
+  handleScroll(event: any) {
+    const currentScrollPosition = event.detail.scrollTop;
+    
+    // Determine scroll direction and position
+    if (currentScrollPosition > this.lastScrollPosition && currentScrollPosition > 50) {
+      // Scrolling down and past threshold
+      this.isSearchbarCollapsed = true;
+    } else if (currentScrollPosition < this.lastScrollPosition) {
+      // Scrolling up
       this.isSearchbarCollapsed = false;
-      this.lastScrollPosition = 0;
-    });
+    }
+    
+    this.lastScrollPosition = currentScrollPosition;
   }
 
-  ngAfterViewInit() {
-    this.setupIntersectionObserver();
-  }
-
-  setupIntersectionObserver() {
-    const options = {
-      root: null,
-      rootMargin: '20px',
-      threshold: 0.1
-    };
-
-    this.observer = new IntersectionObserver((entries) => {
-      entries.forEach((entry) => {
-        if (entry.isIntersecting) {
-          requestAnimationFrame(() => {
-            entry.target.classList.add('show');
-          });
-          this.observer?.unobserve(entry.target);
-        }
+  async loadRestaurants() {
+    try {
+      const loading = await this.loadingCtrl.create({
+        message: 'Loading restaurants...'
       });
-    }, options);
+      await loading.present();
 
-    // Observe all cards with a slight delay to ensure DOM is ready
-    setTimeout(() => {
-      document.querySelectorAll('.scroll-card').forEach((card) => {
-        this.observer?.observe(card);
+      const restaurantsRef = collection(this.firestore, 'restaurant');
+      const querySnapshot = await getDocs(restaurantsRef);
+      
+      this.restaurants = querySnapshot.docs.map(doc => {
+        const data = doc.data() as Restaurant;
+        return data;
       });
-    }, 100);
+
+      await loading.dismiss();
+    } catch (error) {
+      console.error('Error loading restaurants:', error);
+      const alert = await this.alertCtrl.create({
+        header: 'Error',
+        message: 'Unable to load restaurants. Please try again later.',
+        buttons: ['OK']
+      });
+      await alert.present();
+    }
   }
 
   async navigateToProfile() {
@@ -91,80 +92,16 @@ export class HomePage implements AfterViewInit {
 
   async logout() {
     try {
-      const popover = await this.popoverController.getTop();
-      if (popover) {
-        await popover.dismiss();
-      }
-
-      const loading = await this.loadingCtrl.create({
-        message: 'Logging out...',
-        spinner: 'crescent',
-        cssClass: 'custom-loading'
-      });
-      await loading.present();
-
       await signOut(this.auth);
-      await loading.dismiss();
-      await this.router.navigate(['/login'], { replaceUrl: true });
+      await this.router.navigate(['/login']);
     } catch (error) {
-      const loading = await this.loadingCtrl.getTop();
-      if (loading) {
-        await loading.dismiss();
-      }
-
+      console.error('Logout error:', error);
       const alert = await this.alertCtrl.create({
         header: 'Error',
-        message: 'Could not log out. Please try again.',
+        message: 'Failed to logout. Please try again.',
         buttons: ['OK']
       });
       await alert.present();
-      console.error('Logout error:', error);
-    }
-  }
-
-  handleScroll(event: any) {
-    if (this.scrollDebounceTimer) {
-      cancelAnimationFrame(this.scrollDebounceTimer);
-    }
-
-    this.scrollDebounceTimer = requestAnimationFrame(() => {
-      const currentScrollPosition = event.detail.scrollTop;
-      
-      if (Math.abs(currentScrollPosition - this.lastScrollPosition) > 10) {
-        if (currentScrollPosition > this.lastScrollPosition && currentScrollPosition > this.scrollThreshold) {
-          requestAnimationFrame(() => {
-            this.isSearchbarCollapsed = true;
-          });
-        } else if (currentScrollPosition < this.lastScrollPosition) {
-          requestAnimationFrame(() => {
-            this.isSearchbarCollapsed = false;
-          });
-        }
-        
-        this.lastScrollPosition = currentScrollPosition;
-      }
-    });
-  }
-
-  ionViewWillEnter() {
-    this.isSearchbarCollapsed = false;
-    this.lastScrollPosition = 0;
-  }
-
-  ionViewWillLeave() {
-    if (this.observer) {
-      this.observer.disconnect();
-      this.observer = null;
-    }
-  }
-
-  ngOnDestroy() {
-    if (this.scrollDebounceTimer) {
-      cancelAnimationFrame(this.scrollDebounceTimer);
-    }
-    if (this.observer) {
-      this.observer.disconnect();
-      this.observer = null;
     }
   }
 }
