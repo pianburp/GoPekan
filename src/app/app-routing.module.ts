@@ -42,6 +42,10 @@ const routes: Routes = [
   {
     path: 'business/add-restaurant',
     loadChildren: () => import('./business-owner/add-restaurant/add-restaurant.module').then( m => m.AddRestaurantPageModule)
+  },
+  {
+    path: 'user/review/:id',
+    loadChildren: () => import('./user/review/review.module').then( m => m.ReviewPageModule)
   }
 ];
 

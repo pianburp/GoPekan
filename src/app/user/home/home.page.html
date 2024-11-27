@@ -1,4 +1,3 @@
-<!-- home.page.html -->
 <ion-header [translucent]="true">
   <ion-toolbar>
     <ion-title>GoPekan</ion-title>
@@ -16,13 +15,16 @@
 <ion-content [scrollEvents]="true" (ionScroll)="handleScroll($event)">
   <div class="ion-padding">
     <div class="cards-container">
-      <ion-card *ngFor="let restaurant of restaurants" class="restaurant-card">
+      <ion-card *ngFor="let restaurant of restaurants" class="restaurant-card" (click)="navigateToReviews(restaurant.id)">
         <ion-card-header>
           <ion-card-title>{{ restaurant.name }}</ion-card-title>
         </ion-card-header>
         <ion-card-content>
           {{ restaurant.desc }}
         </ion-card-content>
+        <div class="icon-container">
+            <ion-icon name="arrow-forward-outline"></ion-icon>
+        </div>
       </ion-card>
     </div>
   </div>

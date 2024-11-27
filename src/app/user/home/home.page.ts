@@ -10,6 +10,7 @@ import { Firestore, collection, getDocs } from '@angular/fire/firestore';
 interface Restaurant {
   name: string;
   desc: string;
+  id: string; // Make id required instead of optional
 }
 
 @Component({
@@ -39,12 +40,9 @@ export class HomePage implements OnInit {
   handleScroll(event: any) {
     const currentScrollPosition = event.detail.scrollTop;
     
-    // Determine scroll direction and position
     if (currentScrollPosition > this.lastScrollPosition && currentScrollPosition > 50) {
-      // Scrolling down and past threshold
       this.isSearchbarCollapsed = true;
     } else if (currentScrollPosition < this.lastScrollPosition) {
-      // Scrolling up
       this.isSearchbarCollapsed = false;
     }
     
@@ -61,10 +59,10 @@ export class HomePage implements OnInit {
       const restaurantsRef = collection(this.firestore, 'restaurant');
       const querySnapshot = await getDocs(restaurantsRef);
       
-      this.restaurants = querySnapshot.docs.map(doc => {
-        const data = doc.data() as Restaurant;
-        return data;
-      });
+      this.restaurants = querySnapshot.docs.map(doc => ({
+        ...(doc.data() as Omit<Restaurant, 'id'>),
+        id: doc.id // Explicitly add the id
+      }));
 
       await loading.dismiss();
     } catch (error) {
@@ -72,6 +70,31 @@ export class HomePage implements OnInit {
       const alert = await this.alertCtrl.create({
         header: 'Error',
         message: 'Unable to load restaurants. Please try again later.',
+        buttons: ['OK']
+      });
+      await alert.present();
+    }
+  }
+
+  // Updated navigation method with null check
+  async navigateToReviews(restaurantId: string) {
+    if (!restaurantId) {
+      const alert = await this.alertCtrl.create({
+        header: 'Error',
+        message: 'Restaurant ID not found.',
+        buttons: ['OK']
+      });
+      await alert.present();
+      return;
+    }
+  
+    try {
+      await this.router.navigate(['/user/review', restaurantId]);
+    } catch (error) {
+      console.error('Navigation error:', error);
+      const alert = await this.alertCtrl.create({
+        header: 'Error',
+        message: 'Unable to load reviews. Please try again.',
         buttons: ['OK']
       });
       await alert.present();

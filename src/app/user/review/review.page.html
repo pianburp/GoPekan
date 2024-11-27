@@ -1,0 +1,118 @@
+<ion-header [translucent]="true" class="animate-item">
+  <ion-toolbar>
+    <ion-title
+      class="animate__animated animate__fadeIn"
+      (click)="navigateToHome()"
+      >GoPekan</ion-title
+    >
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <ion-card>
+    <ion-card-header>
+      <ion-card-title class="animate__animated animate__fadeInDown">
+        {{ restaurantName }}
+      </ion-card-title>
+
+      <!-- Restaurant Details Section -->
+      <div
+        class="restaurant-details ion-padding animate__animated animate__fadeIn animate__delay-500ms"
+      >
+        <ion-chip color="primary" class="type-chip">
+          <ion-label>{{ restaurantType }}</ion-label>
+        </ion-chip>
+
+        <div class="details-grid">
+          <div
+            class="detail-item animate__animated animate__fadeIn animate__delay-700ms"
+          >
+            <ion-icon name="location" color="medium"></ion-icon>
+            <ion-text>{{ restaurantAddress }}</ion-text>
+          </div>
+
+          <div
+            class="detail-item animate__animated animate__fadeIn animate__delay-800ms"
+          >
+            <ion-icon name="call" color="medium"></ion-icon>
+            <ion-text>{{ restaurantPhone }}</ion-text>
+          </div>
+
+          <div
+            class="detail-item animate__animated animate__fadeIn animate__delay-900ms"
+          >
+            <ion-icon name="information-circle" color="medium"></ion-icon>
+            <ion-text>{{ restaurantDesc }}</ion-text>
+          </div>
+        </div>
+      </div>
+
+      <!-- Plot Map Here -->
+      <div
+        class="map-section animate__animated animate__fadeIn animate__delay-1s"
+        *ngIf="restaurantLocation"
+      >
+        <app-restaurant-map
+          [latitude]="restaurantLocation?.latitude ?? 0"
+          [longitude]="restaurantLocation?.longitude ?? 0"
+          [restaurantName]="restaurantName"
+        >
+        </app-restaurant-map>
+      </div>
+
+      <!-- Rating Summary Section -->
+      <div class="rating-summary ion-padding">
+        <div
+          class="average-rating animate__animated animate__fadeIn animate__delay-1s"
+        >
+          <div class="rating-stars">
+            <ion-icon
+              *ngFor="let star of getStars(averageRating)"
+              [name]="star ? 'star' : 'star-outline'"
+              color="warning"
+              class="animate__animated animate__fadeIn"
+            >
+            </ion-icon>
+          </div>
+          <div class="rating-number">{{ averageRating }} / 5</div>
+        </div>
+        <div
+          class="total-reviews animate__animated animate__fadeIn animate__delay-1s"
+        >
+          {{ totalReviews }} {{ totalReviews === 1 ? 'Review' : 'Reviews' }}
+        </div>
+      </div>
+    </ion-card-header>
+
+    <ion-card-content>
+      <ion-list>
+        <ion-item *ngFor="let review of reviews" class="review-item">
+          <ion-label>
+            <div class="rating">
+              <ion-icon
+                *ngFor="let num of [1,2,3,4,5]"
+                [name]="num <= review.stars ? 'star' : 'star-outline'"
+                color="warning"
+              >
+              </ion-icon>
+            </div>
+            <p class="review-comment">{{ review.text }}</p>
+            <p class="review-date">
+              <ion-note>
+                {{ getDate(review.createdAt) | date:'medium' }}
+              </ion-note>
+            </p>
+          </ion-label>
+        </ion-item>
+
+        <ion-item *ngIf="reviews.length === 0" lines="none">
+          <ion-label class="ion-text-center">
+            <p class="animate__animated animate__fadeIn animate__delay-1s">
+              No reviews yet for this restaurant.
+            </p>
+          </ion-label>
+        </ion-item>
+      </ion-list>
+    </ion-card-content>
+  </ion-card>
+</ion-content>

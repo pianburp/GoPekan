@@ -88,7 +88,8 @@ ion-popover {
 ion-card {
   border-radius: 12px;
   opacity: 0;
-  animation: fadeInUp 0.5s ease-out forwards;
+  animation: fadeInUp 0.7s ease-out forwards;
+  position: relative;
   
   @for $i from 1 through 20 {
     &:nth-child(#{$i}) {
@@ -96,8 +97,8 @@ ion-card {
     }
   }
   
-  ion-card-header {
-    padding: 16px;
+  ion-card-title {
+    font-size: 1.2rem;
     font-weight: bolder;
   }
   
@@ -105,16 +106,11 @@ ion-card {
     padding: 0 16px 16px;
     color: #8c8c8c;
   }
-  
-  ion-button {
-    margin: 0 8px 8px;
-    --padding-start: 12px;
-    --padding-end: 12px;
-    --color: #9ac1fc;
 
-    &:hover {
-      opacity: 0.8;
-    }
+  .icon-container {
+    display: flex;
+    justify-content: flex-end;
+    padding: 0 16px 16px;
   }
   
   &:hover {
@@ -122,3 +118,8 @@ ion-card {
     transition: transform 0.2s ease;
   }
 }
+
+  ion-icon {
+    font-size: 24px;
+    color: #ffffff;
+  }

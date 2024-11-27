@@ -1,0 +1,163 @@
+
+ion-card-title {
+  font-size: 2.5rem;
+  font-weight: bolder;
+  margin-bottom: 16px;
+}
+
+.restaurant-details {
+  margin: 16px 0;
+  
+  .type-chip {
+    display: block;
+    width: fit-content;
+    margin: 8px auto;
+    font-size: 1rem;
+    --background: var(--ion-color-primary-tint);
+  }
+}
+
+.details-grid {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin-top: 16px;
+  
+  .detail-item {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px;
+    background: var(--ion-color-light);
+    border-radius: 8px;
+    
+    ion-icon {
+      font-size: 20px;
+      min-width: 24px;
+    }
+    
+    ion-text {
+      font-size: 0.9rem;
+      color: var(--ion-color-dark);
+    }
+  }
+}
+
+.rating-summary {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  padding: 16px;
+  border-top: 1px solid var(--ion-color-light);
+  border-bottom: 1px solid var(--ion-color-light);
+  margin-top: 16px;
+}
+
+.average-rating {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+
+  .rating-stars {
+    ion-icon {
+      font-size: 24px;
+      margin-right: 4px;
+      
+      @for $i from 1 through 5 {
+        &:nth-child(#{$i}) {
+          animation-delay: #{0.2 * $i}s;
+        }
+      }
+    }
+  }
+
+  .rating-number {
+    font-size: 1.2rem;
+    font-weight: bold;
+    color: var(--ion-color-dark);
+  }
+}
+
+.total-reviews {
+  font-size: 1rem;
+  color: var(--ion-color-medium);
+}
+
+.review-item {
+  --padding-start: 16px;
+  --padding-end: 16px;
+  --padding-top: 12px;
+  --padding-bottom: 12px;
+  opacity: 0;
+  animation: fadeInUp 0.5s ease forwards;
+  
+  @for $i from 1 through 10 {
+    &:nth-child(#{$i}) {
+      animation-delay: #{0.2 * $i}s;
+    }
+  }
+}
+
+.rating {
+  margin-bottom: 8px;
+  
+  ion-icon {
+    font-size: 20px;
+    margin-right: 4px;
+  }
+}
+
+.review-comment {
+  margin: 8px 0;
+  font-size: 16px;
+  white-space: pre-wrap;
+}
+
+.review-date {
+  margin-top: 8px;
+  font-size: 12px;
+}
+
+ion-note {
+  color: var(--ion-color-medium);
+}
+
+ion-title {
+  font-size: 2em;
+  font-weight: bolder;
+  color: #9ac1fc;
+}
+
+ion-toolbar {
+  --background: var(--ion-background-color);
+}
+
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Animation delays */
+.animate__delay-500ms {
+  animation-delay: 500ms !important;
+}
+
+.animate__delay-700ms {
+  animation-delay: 700ms !important;
+}
+
+.animate__delay-800ms {
+  animation-delay: 800ms !important;
+}
+
+.animate__delay-900ms {
+  animation-delay: 900ms !important;
+}
