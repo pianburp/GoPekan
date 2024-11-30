@@ -1,3 +1,274 @@
+ion-card-title {
+  font-size: 2.5rem;
+  font-weight: bolder;
+  margin-bottom: 16px;
+}
+
+.restaurant-details {
+  margin: 16px 0;
+  
+  .type-chip {
+    display: block;
+    width: fit-content;
+    margin: 8px auto;
+    font-size: 1rem;
+    --background: var(--ion-color-primary-tint);
+  }
+}
+
+.details-grid {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin-top: 16px;
+  
+  .detail-item {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px;
+    background: var(--ion-color-light);
+    border-radius: 8px;
+    
+    ion-icon {
+      font-size: 20px;
+      min-width: 24px;
+    }
+    
+    ion-text {
+      font-size: 0.9rem;
+      color: var(--ion-color-dark);
+    }
+  }
+}
+
+.rating-summary {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  padding: 16px;
+  border-top: 1px solid var(--ion-color-light);
+  border-bottom: 1px solid var(--ion-color-light);
+  margin-top: 16px;
+}
+
+.average-rating {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+
+  .rating-stars {
+    ion-icon {
+      font-size: 24px;
+      margin-right: 4px;
+    }
+  }
+
+  .rating-number {
+    font-size: 1.2rem;
+    font-weight: bold;
+    color: var(--ion-color-dark);
+  }
+}
+
+.total-reviews {
+  font-size: 1rem;
+  color: var(--ion-color-medium);
+}
+
+.review-item {
+  --padding-start: 16px;
+  --padding-end: 16px;
+  --padding-top: 12px;
+  --padding-bottom: 12px;
+}
+
+.rating {
+  margin-bottom: 8px;
+  
+  ion-icon {
+    font-size: 20px;
+    margin-right: 4px;
+  }
+}
+
+.review-comment {
+  margin: 8px 0;
+  font-size: 16px;
+  white-space: pre-wrap;
+  color: white;
+}
+
+.review-date {
+  margin-top: 8px;
+  font-size: 12px;
+}
+
+ion-note {
+  color: var(--ion-color-medium);
+}
+
+ion-title {
+  font-size: 2em;
+  font-weight: bolder;
+  color: #9ac1fc;
+}
+
+ion-toolbar {
+  --background: var(--ion-background-color);
+}
+
+.section-title {
+  font-size: 30px;
+  font-weight: bolder;
+  margin: 16px 0;
+  color: white;
+}
+
+.list-container {
+  padding: 0;
+  margin: 0;
+}
+
+.list-item {
+  display: flex;
+  align-items: flex-start;
+  margin-bottom: 12px;
+  padding: 8px;
+}
+
+.icon-container {
+  flex-shrink: 0;
+  width: 24px;
+  height: 24px;
+  margin-right: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.icon-container ion-icon {
+  font-size: 20px;
+}
+
+.text-content {
+  flex: 1;
+  line-height: 1.4;
+  padding-top: 2px;
+}
+
+.sentiment-container {
+  width: 100%;
+  padding: 8px 0;
+}
+
+.sentiment-row {
+  display: flex;
+  align-items: center;
+  margin: 8px 0;
+  width: 100%;
+}
+
+.sentiment-label {
+  width: 80px;
+  font-weight: 500;
+  color: #666;
+}
+
+.sentiment-bar-container {
+  flex: 1;
+  background-color: #f4f4f4d6;
+  border-radius: 4px;
+  overflow: hidden;
+}
+
+.sentiment-bar {
+  height: 24px;
+  display: flex;
+  align-items: center;
+  padding: 0 8px;
+  color: rgb(255, 255, 255);
+  font-weight: 500;
+  font-size: 0.9rem;
+  transition: width 0.3s ease;
+  position: relative;
+  overflow: hidden;
+  span {
+    position: relative;
+    z-index: 2;
+  }
+}
+
+.sentiment-bar.positive {
+  background-color: var(--ion-color-success);
+}
+
+.sentiment-bar.negative {
+  background-color: var(--ion-color-danger);
+}
+
+.sentiment-bar.neutral {
+  background-color: var(--ion-color-medium);
+}
+
+.analysis-loading {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 20px;
+}
+
+.reviews-section {
+  margin-top: 24px;
+}
+
+.review-item {
+  margin-bottom: 16px;
+}
+
+.review-comment {
+  margin: 8px 0;
+  line-height: 1.4;
+}
+
+.review-date {
+  font-size: 0.9em;
+  color: #999;
+}
+
+.sentiment-bar::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: linear-gradient(
+    90deg,
+    rgba(255, 255, 255, 0.1) 0%,
+    rgba(255, 255, 255, 0.2) 50%,
+    rgba(255, 255, 255, 0.1) 100%
+  );
+  transform: translateX(-100%);
+  animation: shimmer 2s infinite;
+}
+
+@keyframes shimmer {
+  100% {
+    transform: translateX(100%);
+  }
+}
+
+.sentiment-bar:hover {
+  filter: brightness(1.1);
+  transform: scale(1.01);
+}
+
+.sentiment-bar {
+  transition: width 0.3s ease, transform 0.2s ease, filter 0.2s ease;
+}
 
 ion-card-title {
   font-size: 2.5rem;
@@ -64,12 +335,6 @@ ion-card-title {
     ion-icon {
       font-size: 24px;
       margin-right: 4px;
-      
-      @for $i from 1 through 5 {
-        &:nth-child(#{$i}) {
-          animation-delay: #{0.2 * $i}s;
-        }
-      }
     }
   }
 
@@ -90,14 +355,6 @@ ion-card-title {
   --padding-end: 16px;
   --padding-top: 12px;
   --padding-bottom: 12px;
-  opacity: 0;
-  animation: fadeInUp 0.5s ease forwards;
-  
-  @for $i from 1 through 10 {
-    &:nth-child(#{$i}) {
-      animation-delay: #{0.2 * $i}s;
-    }
-  }
 }
 
 .rating {
@@ -113,6 +370,7 @@ ion-card-title {
   margin: 8px 0;
   font-size: 16px;
   white-space: pre-wrap;
+  color: white;
 }
 
 .review-date {
@@ -134,30 +392,169 @@ ion-toolbar {
   --background: var(--ion-background-color);
 }
 
-@keyframes fadeInUp {
-  from {
-    opacity: 0;
-    transform: translateY(20px);
+.section-title {
+  font-size: 30px;
+  font-weight: bolder;
+  margin: 16px 0;
+  color: white;
+}
+
+.list-container {
+  padding: 0;
+  margin: 0;
+}
+
+.list-item {
+  display: flex;
+  align-items: flex-start;
+  margin-bottom: 12px;
+  padding: 8px;
+}
+
+.icon-container {
+  flex-shrink: 0;
+  width: 24px;
+  height: 24px;
+  margin-right: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.icon-container ion-icon {
+  font-size: 20px;
+}
+
+.text-content {
+  flex: 1;
+  line-height: 1.4;
+  padding-top: 2px;
+}
+
+.sentiment-container {
+  width: 100%;
+  padding: 8px 0;
+}
+
+.sentiment-row {
+  display: flex;
+  align-items: center;
+  margin: 8px 0;
+  width: 100%;
+}
+
+.sentiment-label {
+  width: 80px;
+  font-weight: 500;
+  color: #666;
+}
+
+.sentiment-bar-container {
+  flex: 1;
+  background-color: #f4f4f4d6;
+  border-radius: 4px;
+  overflow: hidden;
+}
+
+.sentiment-bar {
+  height: 24px;
+  display: flex;
+  align-items: center;
+  padding: 0 8px;
+  color: rgb(255, 255, 255);
+  font-weight: 500;
+  font-size: 0.9rem;
+  transition: width 0.3s ease;
+  position: relative;
+  overflow: hidden;
+  span {
+    position: relative;
+    z-index: 2;
   }
-  to {
-    opacity: 1;
-    transform: translateY(0);
+}
+
+.sentiment-bar.positive {
+  background-color: var(--ion-color-success);
+}
+
+.sentiment-bar.negative {
+  background-color: var(--ion-color-danger);
+}
+
+.sentiment-bar.neutral {
+  background-color: var(--ion-color-medium);
+}
+
+.analysis-loading {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 20px;
+}
+
+.reviews-section {
+  margin-top: 24px;
+}
+
+.show-more-container {
+  display: flex;
+  justify-content: center;
+  margin: 16px 0;
+  
+  ion-button {
+    --padding-start: 24px;
+    --padding-end: 24px;
+    --color: var(--ion-color-primary);
+    font-weight: 500;
+    
+    ion-icon {
+      margin-left: 8px;
+    }
   }
 }
 
-/* Animation delays */
-.animate__delay-500ms {
-  animation-delay: 500ms !important;
+.review-item {
+  margin-bottom: 16px;
 }
 
-.animate__delay-700ms {
-  animation-delay: 700ms !important;
+.review-comment {
+  margin: 8px 0;
+  line-height: 1.4;
 }
 
-.animate__delay-800ms {
-  animation-delay: 800ms !important;
+.review-date {
+  font-size: 0.9em;
+  color: #999;
 }
 
-.animate__delay-900ms {
-  animation-delay: 900ms !important;
+.sentiment-bar::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: linear-gradient(
+    90deg,
+    rgba(255, 255, 255, 0.1) 0%,
+    rgba(255, 255, 255, 0.2) 50%,
+    rgba(255, 255, 255, 0.1) 100%
+  );
+  transform: translateX(-100%);
+  animation: shimmer 2s infinite;
+}
+
+@keyframes shimmer {
+  100% {
+    transform: translateX(100%);
+  }
+}
+
+.sentiment-bar:hover {
+  filter: brightness(1.1);
+  transform: scale(1.01);
+}
+
+.sentiment-bar {
+  transition: width 0.3s ease, transform 0.2s ease, filter 0.2s ease;
 }

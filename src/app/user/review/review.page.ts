@@ -3,6 +3,7 @@ import { ActivatedRoute } from '@angular/router';
 import { Firestore, collection, getDocs, Timestamp, doc, getDoc } from '@angular/fire/firestore';
 import { LoadingController, AlertController } from '@ionic/angular';
 import { Router } from '@angular/router';
+import { ReviewAnalysisService, ReviewAnalysis, Review as AnalysisReview } from '../../../services/review-analysis.service';
 
 interface Review {
   text: string;
@@ -40,13 +41,19 @@ export class ReviewPage implements OnInit {
   averageRating: number = 0;
   totalReviews: number = 0;
   restaurantLocation: { latitude: number; longitude: number } | null = null;
+  reviewAnalysis: ReviewAnalysis | null = null;
+  isAnalyzing: boolean = false;
+  displayedReviews: any[] = [];
+  private readonly pageSize = 5;
+  private currentPage = 1;
 
   constructor(
     private route: ActivatedRoute,
     private firestore: Firestore,
     private loadingCtrl: LoadingController,
     private alertCtrl: AlertController,
-    private router: Router 
+    private router: Router,
+    private reviewAnalysisService: ReviewAnalysisService 
   ) {
     this.restaurantId = this.route.snapshot.paramMap.get('id') || '';
   }
@@ -54,8 +61,19 @@ export class ReviewPage implements OnInit {
   async ngOnInit() {
     await this.loadRestaurantDetails();
     await this.loadReviews();
+    this.updateDisplayedReviews();
   }
 
+  private updateDisplayedReviews() {
+    const endIndex = this.currentPage * this.pageSize;
+    this.displayedReviews = this.reviews.slice(0, endIndex);
+  }
+
+  showMoreReviews() {
+    this.currentPage++;
+    this.updateDisplayedReviews();
+  }
+  
   // Helper method to safely get Date from Timestamp
   getDate(timestamp: Timestamp): Date {
     return timestamp.toDate();
@@ -115,15 +133,15 @@ export class ReviewPage implements OnInit {
       console.log('No restaurantId provided');
       return;
     }
-
+  
     console.log('Loading reviews for restaurant:', this.restaurantId);
     const loading = await this.loadingCtrl.create({
-      message: 'Loading reviews...'
+      message: 'Loading reviews and analysis...'
     });
-
+  
     try {
       await loading.present();
-
+  
       const reviewsRef = collection(this.firestore, 'restaurant', this.restaurantId, 'reviews');
       console.log('Reviews reference created');
       
@@ -137,10 +155,10 @@ export class ReviewPage implements OnInit {
         return {
           ...data,
           id: doc.id,
-          createdAt: data.createdAt // Keep as Timestamp
+          createdAt: data.createdAt
         };
       });
-
+  
       // Sort reviews by date (most recent first)
       this.reviews.sort((a, b) => {
         return b.createdAt.seconds - a.createdAt.seconds;
@@ -150,8 +168,37 @@ export class ReviewPage implements OnInit {
       this.totalReviews = this.reviews.length;
       this.calculateAverageRating();
       
+      // Automatically analyze reviews if there are any
+      if (this.reviews.length > 0) {
+        this.isAnalyzing = true;
+        try {
+          this.reviewAnalysisService.analyzeReviews(this.reviews)
+            .subscribe({
+              next: (analysis) => {
+                this.reviewAnalysis = analysis;
+                console.log('Review analysis completed:', analysis);
+              },
+              error: async (error) => {
+                console.error('Error analyzing reviews:', error);
+                const alert = await this.alertCtrl.create({
+                  header: 'Analysis Error',
+                  message: 'Unable to analyze reviews. Please try refreshing the page.',
+                  buttons: ['OK']
+                });
+                await alert.present();
+              },
+              complete: () => {
+                this.isAnalyzing = false;
+              }
+            });
+        } catch (error) {
+          console.error('Error in analyzeReviews:', error);
+          this.isAnalyzing = false;
+        }
+      }
+      
       console.log('Final processed reviews:', this.reviews);
-
+  
     } catch (error) {
       console.error('Error loading reviews:', error);
       const alert = await this.alertCtrl.create({
@@ -167,6 +214,51 @@ export class ReviewPage implements OnInit {
 
   navigateToHome() {
     this.router.navigate(['/user/home']);
+  }
+  async analyzeReviews() {
+    if (this.reviews.length === 0) {
+      const alert = await this.alertCtrl.create({
+        header: 'No Reviews',
+        message: 'There are no reviews to analyze.',
+        buttons: ['OK']
+      });
+      await alert.present();
+      return;
+    }
+
+    const loading = await this.loadingCtrl.create({
+      message: 'Analyzing reviews...'
+    });
+
+    try {
+      await loading.present();
+      this.isAnalyzing = true;
+
+      this.reviewAnalysisService.analyzeReviews(this.reviews)
+        .subscribe({
+          next: (analysis) => {
+            this.reviewAnalysis = analysis;
+            console.log('Review analysis completed:', analysis);
+          },
+          error: async (error) => {
+            console.error('Error analyzing reviews:', error);
+            const alert = await this.alertCtrl.create({
+              header: 'Analysis Error',
+              message: 'Unable to analyze reviews. Please try again later.',
+              buttons: ['OK']
+            });
+            await alert.present();
+          },
+          complete: () => {
+            this.isAnalyzing = false;
+            loading.dismiss();
+          }
+        });
+    } catch (error) {
+      console.error('Error in analyzeReviews:', error);
+      loading.dismiss();
+      this.isAnalyzing = false;
+    }
   }
   
 }

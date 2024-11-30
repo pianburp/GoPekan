@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { Auth, getAuth, onAuthStateChanged, sendPasswordResetEmail } from '@angular/fire/auth';
 import { Firestore, doc, getDoc, updateDoc } from '@angular/fire/firestore';
+import { Storage, ref, uploadBytes, getDownloadURL } from '@angular/fire/storage';
 import { AlertController } from '@ionic/angular';
 import { Router } from '@angular/router';
 import { trigger, transition, style, animate, query, stagger } from '@angular/animations'; 
@@ -29,12 +30,13 @@ export class ProfilePage implements OnInit {
     name: '',
     email: '',
     phonenumber: '',
-    // Add other profile fields as needed
+    photoURL: '',
   };
 
   constructor(
     private auth: Auth,
     private firestore: Firestore,
+    private storage: Storage,
     private alertController: AlertController,
     private router: Router 
   ) {}
@@ -61,6 +63,89 @@ export class ProfilePage implements OnInit {
     });
   }
 
+  async onFileSelected(event: any) {
+    const file = event.target.files[0];
+    if (file) {
+      // Validate file type
+      if (!file.type.startsWith('image/')) {
+        const alert = await this.alertController.create({
+          header: 'Invalid File Type',
+          message: 'Please select an image file',
+          buttons: ['OK']
+        });
+        await alert.present();
+        return;
+      }
+  
+      // Validate file size (max 5MB)
+      const maxSize = 5 * 1024 * 1024;
+      if (file.size > maxSize) {
+        const alert = await this.alertController.create({
+          header: 'File Too Large',
+          message: 'Please select an image under 5MB',
+          buttons: ['OK']
+        });
+        await alert.present();
+        return;
+      }
+  
+      try {
+        const user = this.auth.currentUser;
+        if (!user) return;
+  
+        // Show loading indicator
+        const loading = await this.alertController.create({
+          message: 'Uploading image...',
+          backdropDismiss: false
+        });
+        await loading.present();
+  
+        // Create a reference to the storage location
+        const fileName = `${new Date().getTime()}_${file.name}`; // Add timestamp to prevent naming conflicts
+        const storageRef = ref(this.storage, `profile-pictures/${user.uid}/${fileName}`);
+        
+        // Create file metadata
+        const metadata = {
+          contentType: file.type,
+        };
+  
+        // Upload the file with metadata
+        const uploadTask = await uploadBytes(storageRef, file, metadata);
+        
+        // Get the download URL
+        const downloadURL = await getDownloadURL(uploadTask.ref);
+        
+        // Update Firestore with the new photo URL
+        const userDoc = doc(this.firestore, 'users', user.uid);
+        await updateDoc(userDoc, {
+          photoURL: downloadURL
+        });
+        
+        // Update local state
+        this.userProfile.photoURL = downloadURL;
+  
+        // Dismiss loading indicator
+        await loading.dismiss();
+        
+        const alert = await this.alertController.create({
+          header: 'Success',
+          message: 'Profile picture updated successfully',
+          buttons: ['OK']
+        });
+        await alert.present();
+        
+      } catch (error) {
+        console.error('Upload error:', error);
+        const alert = await this.alertController.create({
+          header: 'Error',
+          message: 'Failed to upload profile picture. Please try again.',
+          buttons: ['OK']
+        });
+        await alert.present();
+      }
+    }
+  }
+
   async editProfile() {
     const auth = getAuth();
     const user = auth.currentUser;
@@ -81,7 +166,8 @@ export class ProfilePage implements OnInit {
         const userDoc = doc(this.firestore, 'users', user.uid);
         await updateDoc(userDoc, {
           name: this.userProfile.name,
-          phonenumber: this.userProfile.phonenumber 
+          phonenumber: this.userProfile.phonenumber,
+          photoURL: this.userProfile.photoURL
         });
 
         const alert = await this.alertController.create({
@@ -133,6 +219,7 @@ export class ProfilePage implements OnInit {
       }
     }
   }
+
   navigateToHome() {
     this.router.navigate(['/user/home']);
   }

@@ -1,4 +1,3 @@
-// src/app/user/review/components/restaurant-map.component.ts
 import { Component, Input, OnInit, ElementRef, ViewChild } from '@angular/core';
 
 declare var google: any;

@@ -5,10 +5,16 @@
 </ion-header>
 
 <ion-content [fullscreen]="true" class="ion-padding" [@fadeIn]>
+
   <ion-card class="animate-item">
+    <div class="profile-picture-container">
+      <img [src]="userProfile.photoURL || 'assets/default-avatar.jpg'" alt="Profile picture" class="profile-picture">
+      <input type="file" (change)="onFileSelected($event)" accept="image/*" #fileInput style="display: none">
+      <button (click)="fileInput.click()">Change Profile Picture</button>
+    </div>
     <ion-card-header>
       <ion-card-title class="ion-text-center animate-item">
-        Personal Information&ensp;<ion-icon name="shield-checkmark"></ion-icon>
+        Personal Information
       </ion-card-title>
     </ion-card-header>
 
