@@ -1,0 +1,79 @@
+<ion-header [translucent]="true" class="animate-item">
+  <ion-toolbar>
+    <ion-title (click)="navigateToHome()">GoPekan</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content class="ion-padding">
+  <ion-card class="animate-item">
+    <ion-img src="assets\44069.jpg"></ion-img>
+    <ion-card-header>
+      <ion-card-title class="ion-text-center">
+        Update Your Restaurant Details
+      </ion-card-title>
+    </ion-card-header>
+    <ion-card-content>
+      <form (ngSubmit)="onSubmit()">
+        <ion-item>
+          <ion-icon name="person-outline" slot="start"></ion-icon>
+          <ion-input
+            type="text"
+            [(ngModel)]="restaurant.name"
+            name="name"
+            fill="solid"
+            label="Name"
+            labelPlacement="floating"
+            errorText="Invalid name"
+            required
+          ></ion-input>
+        </ion-item>
+        <ion-item>
+          <ion-icon name="location-outline" slot="start"></ion-icon>
+          <ion-input
+            type="text"
+            [(ngModel)]="restaurant.address"
+            name="address"
+            fill="solid"
+            label="Address"
+            labelPlacement="floating"
+            required
+          ></ion-input>
+        </ion-item>
+        <ion-item>
+          <ion-icon name="fast-food-outline" slot="start"></ion-icon>
+          <ion-select
+            [(ngModel)]="restaurant.cuisineType"
+            name="cuisineType"
+            aria-label="cuisine-type"
+            interface="action-sheet"
+            placeholder="Cuisine Type"
+            required
+          >
+            <ion-select-option value="local-food">Local Food</ion-select-option>
+            <ion-select-option value="western">Western</ion-select-option>
+            <ion-select-option value="pastries">Pastries</ion-select-option>
+            <ion-select-option value="noodle">Noodle</ion-select-option>
+            <ion-select-option value="snack">Snack</ion-select-option>
+          </ion-select>
+        </ion-item>
+        <ion-item>
+          <ion-icon name="text" slot="start"></ion-icon>
+          <ion-textarea
+            [(ngModel)]="restaurant.desc"
+            name="desc"
+            aria-label="Custom textarea"
+            placeholder="Restaurant's description"
+            class="custom"
+            helperText="Helper text"
+            [counter]="true"
+            [maxlength]="100"
+            required
+          ></ion-textarea>
+        </ion-item><br>
+        <ion-button expand="block" type="submit">Edit Restaurant</ion-button>
+      </form>
+      <br>
+      <ion-button expand="block" color="danger" (click)="deleteRestaurant()">Delete Restaurant</ion-button>
+    </ion-card-content>
+  </ion-card>
+</ion-content>

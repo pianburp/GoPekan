@@ -2,7 +2,7 @@
   <ion-toolbar>
     <ion-title>GoPekan</ion-title>
     <ion-buttons slot="end">
-      <ion-button id="profile-btn">
+      <ion-button (click)="presentProfilePopover($event)">
         <ion-icon name="person-outline" size="large"></ion-icon>
       </ion-button>
     </ion-buttons>
@@ -12,46 +12,43 @@
   </ion-toolbar>
 </ion-header>
 
-<ion-popover trigger="profile-btn" trigger-action="click">
-  <ng-template>
-    <ion-list>
-      <ion-item button (click)="navigateToProfile()">
-        <ion-icon name="person-outline" slot="start"></ion-icon>
-        <ion-label>Profile</ion-label>
-      </ion-item>
-      <ion-item button (click)="navigateToDashboard()">
-        <ion-icon name="bar-chart-outline"></ion-icon>
-        <ion-label>Dashboard</ion-label>
-      </ion-item>
-      <ion-item button (click)="logout()">
-        <ion-icon name="log-out-outline" slot="start"></ion-icon>
-        <ion-label>Logout</ion-label>
-      </ion-item>
-    </ion-list>
-  </ng-template>
-</ion-popover>
+<ion-content [scrollEvents]="true" (ionScroll)="handleScroll($event)">
+  <div class="ion-padding">
+    <div class="cards-container">
+      <ng-container *ngIf="restaurants.length > 0; else noRestaurants">
+        <ion-card
+          *ngFor="let restaurant of restaurants"
+          (click)="navigateToEditRestaurant(restaurant.id)"
+        >
+          <ion-card-header>
+            <ion-card-title>{{ restaurant.name }}</ion-card-title>
+          </ion-card-header>
+          <ion-card-content>
+            <p>{{ restaurant.desc }}</p>
+          </ion-card-content>
+          <div class="icon-container">
+            <ion-icon name="create-outline"></ion-icon>
+        </div>
+        </ion-card>
+      </ng-container>
 
-<ion-content [fullscreen]="true" scrollEvents="true" (ionScroll)="handleScroll($event)">
-  <ion-card *ngFor="let item of cards" class="scroll-card">
-    <ion-card-header>
-      <ion-card-title>Restaurant {{item}}</ion-card-title>
-      <ion-card-subtitle>Restaurant {{item}}</ion-card-subtitle>
-    </ion-card-header>
-  
-    <ion-card-content>
-      Here's a small text description for the card content. Nothing more, nothing less.
-    </ion-card-content>
-  
-    <ion-button fill="clear">
-      <ion-icon name="heart-outline" slot="start"></ion-icon>
-      Like
-    </ion-button>
-    <ion-button fill="clear">
-      <ion-icon name="share-outline" slot="start"></ion-icon>
-      Share
-    </ion-button>
-  </ion-card>
-  <ion-button expand="block" (click)="navigateToRestaurant()" >
-    Add Restaurant
-  </ion-button>
+      <ng-template #noRestaurants>
+        <div class="no-restaurants">
+          <div class="ion-padding">
+            <ion-img src="assets/error.jpg" alt="No restaurants found"></ion-img>
+            <ion-text>
+              <h2>You haven't added any restaurants yet</h2>
+            </ion-text>
+          </div>
+        </div>
+      </ng-template>
+    </div>
+  </div>
+
+  <ion-fab vertical="bottom" horizontal="end" slot="fixed">
+    <ion-fab-button (click)="navigateToRestaurant()">
+      <ion-icon name="add"></ion-icon>
+    </ion-fab-button>
+  </ion-fab>
 </ion-content>
+

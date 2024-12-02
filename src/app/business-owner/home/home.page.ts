@@ -1,183 +1,138 @@
-import { Component, AfterViewInit } from '@angular/core';
-import { Router } from '@angular/router';
+import { Component, OnInit } from '@angular/core';
 import { LoadingController, AlertController, PopoverController } from '@ionic/angular';
 import { Auth } from '@angular/fire/auth';
-import { signOut } from '@angular/fire/auth';
-import { Platform } from '@ionic/angular';
-import { trigger, transition, style, animate, query, stagger } from '@angular/animations';
+import { Firestore, collection, query, where, getDocs } from '@angular/fire/firestore';
+import { Router } from '@angular/router';
+import { ProfilePopoverComponent } from './components/profile-popover.component';
+
+interface Restaurant {
+  id: string;
+  name: string;
+  desc: string;
+  ownerId: string;
+}
 
 @Component({
   selector: 'app-home',
   templateUrl: 'home.page.html',
   styleUrls: ['home.page.scss'],
-  animations: [
-    trigger('fadeIn', [
-      transition(':enter', [
-        query('.animate-item', [
-          style({ opacity: 0, transform: 'translateY(20px)' }),
-          stagger(50, [
-            animate('400ms cubic-bezier(0.4, 0, 0.2, 1)', 
-              style({ opacity: 1, transform: 'translateY(0)' })
-            )
-          ])
-        ], { optional: true })
-      ])
-    ])
-  ]
 })
-export class HomePage implements AfterViewInit {
-  isSearchbarCollapsed = false;
-  lastScrollPosition = 0;
-  scrollThreshold = 50;
-  scrollDebounceTimer: any;
-  cards = Array(10).fill(0).map((_, index) => index + 1);
-  observer: IntersectionObserver | null = null;
+export class HomePage implements OnInit {
+  restaurants: Restaurant[] = [];
+  isSearchbarCollapsed: boolean = false;
+  lastScrollPosition: number = 0;
 
   constructor(
     private auth: Auth,
-    private router: Router,
+    private firestore: Firestore,
     private loadingCtrl: LoadingController,
     private alertCtrl: AlertController,
     private popoverController: PopoverController,
-    private platform: Platform
-  ) {
-    this.platform.ready().then(() => {
-      this.isSearchbarCollapsed = false;
-      this.lastScrollPosition = 0;
+    private router: Router
+  ) {}
+
+  ngOnInit() {
+    this.auth.onAuthStateChanged(async (user) => {
+      if (user) {
+        await this.loadRestaurants();
+      } else {
+        this.router.navigate(['/login']);
+      }
     });
   }
 
-  ngAfterViewInit() {
-    this.setupIntersectionObserver();
+  async presentProfilePopover(event: any) {
+    const popover = await this.popoverController.create({
+      component: ProfilePopoverComponent,
+      event: event,
+      dismissOnSelect: true,
+      translucent: true
+    });
+    
+    await popover.present();
   }
 
-  setupIntersectionObserver() {
-    const options = {
-      root: null,
-      rootMargin: '20px',
-      threshold: 0.1
-    };
-
-    this.observer = new IntersectionObserver((entries) => {
-      entries.forEach((entry) => {
-        if (entry.isIntersecting) {
-          requestAnimationFrame(() => {
-            entry.target.classList.add('show');
-          });
-          this.observer?.unobserve(entry.target);
-        }
-      });
-    }, options);
-
-    setTimeout(() => {
-      document.querySelectorAll('.scroll-card').forEach((card) => {
-        this.observer?.observe(card);
-      });
-    }, 100);
-  }
-
-  async navigateToProfile() {
-    try {
-      const popover = await this.popoverController.getTop();
-      if (popover) {
-        await popover.dismiss();
-      }
-      await this.router.navigate(['/business/profile']);
-    } catch (error) {
-      console.error('Navigation error:', error);
+  async loadRestaurants() {
+    const currentUserId = this.auth.currentUser?.uid;
+    
+    // Add check for currentUserId
+    if (!currentUserId) {
+      console.log('No user ID available');
+      return;
     }
-  }
-  async navigateToDashboard() {
-    try {
-      const popover = await this.popoverController.getTop();
-      if (popover) {
-        await popover.dismiss();
-      }
-      await this.router.navigate(['/business/dashboard']);
-    } catch (error) {
-      console.error('Navigation error:', error);
-    }
-  }
 
-  async logout() {
+    let loading = await this.loadingCtrl.create({
+      message: 'Loading your restaurants...'
+    });
+    
     try {
-      const popover = await this.popoverController.getTop();
-      if (popover) {
-        await popover.dismiss();
-      }
-
-      const loading = await this.loadingCtrl.create({
-        message: 'Logging out...',
-        spinner: 'crescent',
-        cssClass: 'custom-loading'
-      });
       await loading.present();
+      const restaurantsRef = collection(this.firestore, 'restaurant');
+      const q = query(
+        restaurantsRef, 
+        where('ownerId', '==', currentUserId)
+      );
+      
+      const querySnapshot = await getDocs(q);
+      
+      this.restaurants = querySnapshot.docs.map(doc => ({
+        ...(doc.data() as Omit<Restaurant, 'id'>),
+        id: doc.id
+      }));
 
-      await signOut(this.auth);
-      await loading.dismiss();
-      await this.router.navigate(['/login'], { replaceUrl: true });
     } catch (error) {
-      const loading = await this.loadingCtrl.getTop();
-      if (loading) {
-        await loading.dismiss();
-      }
-
+      console.error('Error loading restaurants:', error);
       const alert = await this.alertCtrl.create({
         header: 'Error',
-        message: 'Could not log out. Please try again.',
+        message: 'Unable to load your restaurants. Please try again later.',
         buttons: ['OK']
       });
       await alert.present();
-      console.error('Logout error:', error);
+    } finally {
+      await loading.dismiss();
     }
   }
+
 
   handleScroll(event: any) {
-    if (this.scrollDebounceTimer) {
-      cancelAnimationFrame(this.scrollDebounceTimer);
+    const currentScrollPosition = event.detail.scrollTop;
+    
+    if (currentScrollPosition > this.lastScrollPosition && currentScrollPosition > 50) {
+      this.isSearchbarCollapsed = true;
+    } else if (currentScrollPosition < this.lastScrollPosition) {
+      this.isSearchbarCollapsed = false;
     }
-
-    this.scrollDebounceTimer = requestAnimationFrame(() => {
-      const currentScrollPosition = event.detail.scrollTop;
-      
-      if (Math.abs(currentScrollPosition - this.lastScrollPosition) > 10) {
-        if (currentScrollPosition > this.lastScrollPosition && currentScrollPosition > this.scrollThreshold) {
-          requestAnimationFrame(() => {
-            this.isSearchbarCollapsed = true;
-          });
-        } else if (currentScrollPosition < this.lastScrollPosition) {
-          requestAnimationFrame(() => {
-            this.isSearchbarCollapsed = false;
-          });
-        }
-        
-        this.lastScrollPosition = currentScrollPosition;
-      }
-    });
+    
+    this.lastScrollPosition = currentScrollPosition;
   }
 
-  ionViewWillEnter() {
-    this.isSearchbarCollapsed = false;
-    this.lastScrollPosition = 0;
-  }
-
-  ionViewWillLeave() {
-    if (this.observer) {
-      this.observer.disconnect();
-      this.observer = null;
+  async navigateToEditRestaurant(restaurantId: string) {
+    if (!restaurantId) {
+      const alert = await this.alertCtrl.create({
+        header: 'Error',
+        message: 'Restaurant ID not found.',
+        buttons: ['OK']
+      });
+      await alert.present();
+      return;
+    }
+  
+    try {
+      await this.router.navigate(['/business/edit-restaurant', restaurantId]);
+    } catch (error) {
+      console.error('Navigation error:', error);
+      const alert = await this.alertCtrl.create({
+        header: 'Error',
+        message: 'Unable to edit restaurant. Please try again.',
+        buttons: ['OK']
+      });
+      await alert.present();
     }
   }
 
-  ngOnDestroy() {
-    if (this.scrollDebounceTimer) {
-      cancelAnimationFrame(this.scrollDebounceTimer);
-    }
-    if (this.observer) {
-      this.observer.disconnect();
-      this.observer = null;
-    }
+  async navigateToRestaurant() {
+    await this.router.navigate(['/business/add-restaurant']);
   }
-  navigateToRestaurant() {
-    this.router.navigate(['/business/add-restaurant']);
-  }
+
 }
+

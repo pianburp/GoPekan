@@ -2,7 +2,7 @@
   <ion-toolbar>
     <ion-title>GoPekan</ion-title>
     <ion-buttons slot="end">
-      <ion-button id="profile-btn">
+      <ion-button (click)="presentProfilePopover($event)">
         <ion-icon name="person-outline" size="large"></ion-icon>
       </ion-button>
     </ion-buttons>
@@ -29,19 +29,3 @@
     </div>
   </div>
 </ion-content>
-
-<!-- Profile Popover -->
-<ion-popover trigger="profile-btn" [dismissOnSelect]="true">
-  <ng-template>
-    <ion-list>
-      <ion-item button (click)="navigateToProfile()">
-        <ion-icon name="person-outline" slot="start"></ion-icon>
-        <ion-label>Profile</ion-label>
-      </ion-item>
-      <ion-item button (click)="logout()">
-        <ion-icon name="log-out-outline" slot="start"></ion-icon>
-        <ion-label>Logout</ion-label>
-      </ion-item>
-    </ion-list>
-  </ng-template>
-</ion-popover>

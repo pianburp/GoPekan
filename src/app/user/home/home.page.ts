@@ -1,4 +1,3 @@
-// home.page.ts
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { LoadingController, AlertController, PopoverController } from '@ionic/angular';
@@ -6,6 +5,7 @@ import { Auth } from '@angular/fire/auth';
 import { signOut } from '@angular/fire/auth';
 import { Platform } from '@ionic/angular';
 import { Firestore, collection, getDocs } from '@angular/fire/firestore';
+import { ProfilePopoverComponent } from './components/profile-popover.component';
 
 interface Restaurant {
   name: string;
@@ -35,6 +35,17 @@ export class HomePage implements OnInit {
 
   async ngOnInit() {
     await this.loadRestaurants();
+  }
+
+  async presentProfilePopover(event: any) {
+    const popover = await this.popoverController.create({
+      component: ProfilePopoverComponent,
+      event: event,
+      dismissOnSelect: true,
+      translucent: true
+    });
+    
+    await popover.present();
   }
 
   handleScroll(event: any) {
