@@ -6,30 +6,82 @@
 </ion-header>
 
 <ion-content [fullscreen]="true">
-  <br>
-  <ion-title color="light">My <br> Dashboard</ion-title>
-  <ion-card>
-    <ion-card-header>
-      <ion-card-subtitle>Performance Overview</ion-card-subtitle>
-      <ion-card-title>Previous month report</ion-card-title>
-    </ion-card-header>
-    <ion-card-content>
-      <div class="chart-container">
-        <ngx-charts-line-chart
-          [results]="chartData"
-          [xAxis]="true"
-          [yAxis]="true"
-          [legend]="true"
-          [showXAxisLabel]="true"
-          [showYAxisLabel]="true"
-          [xAxisLabel]="'Week'"
-          [yAxisLabel]="'Revenue ($)'"
-          [scheme]="colorScheme"
-          [autoScale]="true"
-          [animations]="true"
-          (select)="onSelect($event)">
-        </ngx-charts-line-chart>
-      </div>
-    </ion-card-content>
-  </ion-card>
+  <div class="dashboard-container">
+    <!-- Loading spinner -->
+    <ion-spinner *ngIf="isLoading"></ion-spinner>
+
+    <!-- Dashboard content -->
+    <ng-container *ngIf="!isLoading">
+      <!-- Metrics for each restaurant -->
+      <ion-card *ngFor="let metrics of restaurantMetrics">
+        <ion-card-header>
+          <ion-card-title>{{ metrics.restaurantName }}</ion-card-title>
+        </ion-card-header>
+
+        <ion-card-content>
+          <!-- Summary Metrics -->
+          <div class="metrics-section">
+            <h2>Summary Metrics</h2>
+            <ion-grid>
+              <ion-row>
+                <ion-col size="6">
+                  <div class="metric-box">
+                    <h3>Total Reviews</h3>
+                    <p class="metric-value">{{ metrics.totalReviews }}</p>
+                  </div>
+                </ion-col>
+                <ion-col size="6">
+                  <div class="metric-box">
+                    <h3>Average Rating</h3>
+                    <p class="metric-value">
+                      {{ metrics.averageRating | number:'1.1-1' }}
+                      <ion-icon name="star" color="warning"></ion-icon>
+                    </p>
+                  </div>
+                </ion-col>
+              </ion-row>
+            </ion-grid>
+          </div>
+
+          <!-- Sentiment Analysis -->
+          <div class="sentiment-section">
+            <h2>Sentiment Distribution</h2>
+            <ion-grid>
+              <ion-row>
+                <ion-col size="4">
+                  <div class="sentiment-box positive">
+                    <h4>Positive</h4>
+                    <p>{{ metrics.sentimentDistribution.positive }}</p>
+                  </div>
+                </ion-col>
+                <ion-col size="4">
+                  <div class="sentiment-box neutral">
+                    <h4>Neutral</h4>
+                    <p>{{ metrics.sentimentDistribution.neutral }}</p>
+                  </div>
+                </ion-col>
+                <ion-col size="4">
+                  <div class="sentiment-box negative">
+                    <h4>Negative</h4>
+                    <p>{{ metrics.sentimentDistribution.negative }}</p>
+                  </div>
+                </ion-col>
+              </ion-row>
+            </ion-grid>
+          </div>
+
+          <!-- Top Keywords -->
+          <div class="keywords-section">
+            <h2>Top Keywords</h2>
+            <div class="keyword-cloud">
+              <ion-chip *ngFor="let keyword of metrics.topKeywords">
+                {{ keyword }}
+              </ion-chip>
+            </div>
+          </div>
+        </ion-card-content>
+      </ion-card>
+    </ng-container>
+  </div>
+
 </ion-content>

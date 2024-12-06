@@ -31,14 +31,14 @@ export class HomePage implements OnInit {
     private router: Router
   ) {}
 
-  ngOnInit() {
-    this.auth.onAuthStateChanged(async (user) => {
-      if (user) {
-        await this.loadRestaurants();
-      } else {
-        this.router.navigate(['/login']);
-      }
-    });
+  async ngOnInit() {
+    await this.loadRestaurants();
+  }
+
+  ionViewWillEnter() {
+    if (this.auth.currentUser) {
+      this.loadRestaurants();
+    }
   }
 
   async presentProfilePopover(event: any) {
@@ -55,14 +55,14 @@ export class HomePage implements OnInit {
   async loadRestaurants() {
     const currentUserId = this.auth.currentUser?.uid;
     
-    // Add check for currentUserId
     if (!currentUserId) {
       console.log('No user ID available');
       return;
     }
 
     let loading = await this.loadingCtrl.create({
-      message: 'Loading your restaurants...'
+      message: 'Loading your restaurants...',
+      duration: 2000 // Add a maximum duration to prevent infinite loading
     });
     
     try {
@@ -89,7 +89,9 @@ export class HomePage implements OnInit {
       });
       await alert.present();
     } finally {
-      await loading.dismiss();
+      if (loading) {
+        await loading.dismiss();
+      }
     }
   }
 

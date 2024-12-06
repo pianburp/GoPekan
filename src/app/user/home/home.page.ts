@@ -10,7 +10,7 @@ import { ProfilePopoverComponent } from './components/profile-popover.component'
 interface Restaurant {
   name: string;
   desc: string;
-  id: string; // Make id required instead of optional
+  id: string; 
 }
 
 @Component({
@@ -72,7 +72,7 @@ export class HomePage implements OnInit {
       
       this.restaurants = querySnapshot.docs.map(doc => ({
         ...(doc.data() as Omit<Restaurant, 'id'>),
-        id: doc.id // Explicitly add the id
+        id: doc.id 
       }));
 
       await loading.dismiss();
@@ -87,7 +87,6 @@ export class HomePage implements OnInit {
     }
   }
 
-  // Updated navigation method with null check
   async navigateToReviews(restaurantId: string) {
     if (!restaurantId) {
       const alert = await this.alertCtrl.create({

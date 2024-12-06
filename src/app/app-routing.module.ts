@@ -48,10 +48,6 @@ const routes: Routes = [
     loadChildren: () => import('./user/review/review.module').then( m => m.ReviewPageModule)
   },
   {
-    path: 'user/add-review',
-    loadChildren: () => import('./user/add-review/add-review.module').then( m => m.AddReviewPageModule)
-  },
-  {
     path: 'business/edit-restaurant/:id',
     loadChildren: () => import('./business-owner/edit-restaurant/edit-restaurant.module').then( m => m.EditRestaurantPageModule)
   }

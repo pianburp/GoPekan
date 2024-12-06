@@ -15,22 +15,16 @@ ion-toolbar {
   --background: var(--ion-background-color);
 }
 
-// dashboard.page.scss
-.chart-container {
-  height: 300px;
-  margin: 16px 0;
-}
-
 ion-card {
   margin: 16px;
-  border-radius: 16px;
+  border-radius: 8px;
 
   ion-card-header {
     padding: 16px;
 
     ion-card-title {
-      font-size: 1.4em;
-      font-weight: 600;
+      font-size: 1.7em;
+      font-weight: bolder;
     }
 
     ion-card-subtitle {
@@ -38,11 +32,96 @@ ion-card {
       font-size: 0.8em;
     }
   }
+  
 }
 
-// Make chart responsive
-::ng-deep {
-  .ngx-charts {
-    float: none;
+/* dashboard.page.scss */
+.dashboard-container {
+  padding: 16px;
+
+  ion-spinner {
+    display: block;
+    margin: 20px auto;
+  }
+}
+
+.metrics-section,
+.sentiment-section,
+.keywords-section {
+  margin-bottom: 20px;
+
+  h2 {
+    font-size: 1.2rem;
+    margin-bottom: 16px;
+    color: var(--ion-color-primary);
+  }
+}
+
+.metric-box {
+  background: var(--ion-color-light);
+  padding: 16px;
+  border-radius: 8px;
+  text-align: center;
+
+  h3 {
+    font-size: 0.9rem;
+    margin-bottom: 8px;
+    color: var(--ion-color-medium);
+  }
+
+  .metric-value {
+    font-size: 1.5rem;
+    font-weight: bold;
+    margin: 0;
+    color: var(--ion-color-dark);
+
+    ion-icon {
+      vertical-align: middle;
+      margin-left: 4px;
+    }
+  }
+}
+
+.sentiment-box {
+  text-align: center;
+  padding: 12px;
+  border-radius: 8px;
+
+  h4 {
+    font-size: 0.8rem;
+    margin-bottom: 8px;
+  }
+
+  p {
+    font-size: 1.2rem;
+    font-weight: bold;
+    margin: 0;
+  }
+
+  &.positive {
+    background: rgba(var(--ion-color-success-rgb), 0.1);
+    color: var(--ion-color-success);
+  }
+
+  &.neutral {
+    background: rgba(var(--ion-color-warning-rgb), 0.1);
+    color: var(--ion-color-warning);
+  }
+
+  &.negative {
+    background: rgba(var(--ion-color-danger-rgb), 0.1);
+    color: var(--ion-color-danger);
+  }
+}
+
+.keyword-cloud {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+
+  ion-chip {
+    --background: var(--ion-color-light);
+    --color: var(--ion-color-medium);
+    font-size: 0.8rem;
   }
 }

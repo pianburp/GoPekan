@@ -40,10 +40,22 @@
           ></ion-input>
         </ion-item>
         <ion-item>
+          <ion-icon name="location-outline" slot="start"></ion-icon>
+          <ion-input
+          type="tel"
+          [(ngModel)]="restaurant.phone"
+          name="phone"
+          fill="solid"
+          label="Phone"
+          labelPlacement="floating"
+          required
+          ></ion-input>
+        </ion-item>
+        <ion-item>
           <ion-icon name="fast-food-outline" slot="start"></ion-icon>
           <ion-select
-            [(ngModel)]="restaurant.cuisineType"
-            name="cuisineType"
+            [(ngModel)]="restaurant.type"
+            name="type"
             aria-label="cuisine-type"
             interface="action-sheet"
             placeholder="Cuisine Type"

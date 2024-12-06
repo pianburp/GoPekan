@@ -8,6 +8,8 @@ import { ReviewPageRoutingModule } from './review-routing.module';
 
 import { ReviewPage } from './review.page';
 import { RestaurantMapComponent } from './components/restaurant-map.component';
+import { ReviewFormComponent } from './components/review-form.component';
+
 
 @NgModule({
   imports: [
@@ -16,6 +18,6 @@ import { RestaurantMapComponent } from './components/restaurant-map.component';
     IonicModule,
     ReviewPageRoutingModule
   ],
-  declarations: [ReviewPage, RestaurantMapComponent  ]
+  declarations: [ReviewPage, RestaurantMapComponent, ReviewFormComponent  ]
 })
 export class ReviewPageModule {}

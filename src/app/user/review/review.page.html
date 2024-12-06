@@ -184,6 +184,12 @@
       <!-- Reviews Section -->
       <div class="reviews-section">
         <h2 class="section-title">Reviews</h2>
+          <app-review-form 
+            [restaurantId]="restaurantId"
+            (reviewUpdated)="loadReviews()"
+          ></app-review-form>
+        
+        <!-- Rest of your existing review list code -->
         <ion-list>
           <ion-item *ngFor="let review of displayedReviews" class="review-item">
             <ion-label>
@@ -203,14 +209,14 @@
               </p>
             </ion-label>
           </ion-item>
-
+      
           <ion-item *ngIf="reviews.length === 0" lines="none">
             <ion-label class="ion-text-center">
               <p>No reviews yet for this restaurant.</p>
             </ion-label>
           </ion-item>
         </ion-list>
-
+      
         <!-- Show More Button -->
         <div class="show-more-container" *ngIf="reviews.length > displayedReviews.length">
           <ion-button fill="clear" (click)="showMoreReviews()">

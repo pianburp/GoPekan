@@ -9,7 +9,8 @@ interface Restaurant {
   name: string;
   desc: string;
   address: string;
-  cuisineType: string;
+  type: string;  
+  phone: string;
   ownerId: string;
 }
 
@@ -25,7 +26,8 @@ export class EditRestaurantPage implements OnInit {
     name: '',
     desc: '',
     address: '',
-    cuisineType: '',
+    type: '',
+    phone: '',  
     ownerId: ''
   };
   isLoading: boolean = false;
@@ -64,7 +66,8 @@ export class EditRestaurantPage implements OnInit {
           name: data.name,
           desc: data.desc,
           address: data.address || '',
-          cuisineType: data.cuisineType || '',
+          type: data.type || '',
+          phone: data.phone || '',  
           ownerId: data.ownerId
         };
       } else {
@@ -90,7 +93,7 @@ export class EditRestaurantPage implements OnInit {
   }
 
   async onSubmit() {
-    if (!this.restaurant.name || !this.restaurant.desc || !this.restaurant.address || !this.restaurant.cuisineType) {
+    if (!this.restaurant.name || !this.restaurant.desc || !this.restaurant.address || !this.restaurant.type) {
       const alert = await this.alertCtrl.create({
         header: 'Invalid Form',
         message: 'Please fill in all required fields.',
@@ -111,7 +114,8 @@ export class EditRestaurantPage implements OnInit {
         name: this.restaurant.name,
         desc: this.restaurant.desc,
         address: this.restaurant.address,
-        cuisineType: this.restaurant.cuisineType
+        type: this.restaurant.type,
+        phone: this.restaurant.phone
       });
 
       const alert = await this.alertCtrl.create({
@@ -139,7 +143,6 @@ export class EditRestaurantPage implements OnInit {
   }
 
   async deleteRestaurant() {
-    // Show confirmation alert before deleting
     const confirmAlert = await this.alertCtrl.create({
       header: 'Confirm Delete',
       message: 'Are you sure you want to delete this restaurant? This action cannot be undone.',

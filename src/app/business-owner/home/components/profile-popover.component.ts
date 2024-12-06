@@ -1,12 +1,9 @@
-// components/profile-popover.component.ts
 import { Component } from '@angular/core';
 import { Auth } from '@angular/fire/auth';
 import { Router } from '@angular/router';
 import { PopoverController } from '@ionic/angular';
 
 @Component({
-  selector: 'app-profile-popover',
-  standalone: false,
   template: `
     <ion-list>
       <ion-item button (click)="navigateToProfile()">
