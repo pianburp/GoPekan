@@ -21,20 +21,33 @@ export class DashboardSentimentService {
   private genAI: GoogleGenerativeAI;
   private model: any;
   private requestCounter = 0;
-  private readonly MAX_REQUESTS_PER_MINUTE = 60; // Adjust based on your API quota
-  private readonly COOLDOWN_PERIOD = 60000; // 1 minute in milliseconds
+  private readonly MAX_REQUESTS_PER_MINUTE = 1800; 
+  private readonly COOLDOWN_PERIOD = 60000; 
+  private lastResetTime = Date.now();
 
   constructor() {
     this.genAI = new GoogleGenerativeAI(environment.GEMINI_API_KEY);
     this.model = this.genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
   }
 
+  private resetCounterIfNeeded() {
+    const now = Date.now();
+    if (now - this.lastResetTime >= this.COOLDOWN_PERIOD) {
+      this.requestCounter = 0;
+      this.lastResetTime = now;
+    }
+  }
+
   async analyzeSentiment(text: string): Promise<SentimentResult> {
     try {
+      this.resetCounterIfNeeded();
+
       // Check rate limiting
       if (this.requestCounter >= this.MAX_REQUESTS_PER_MINUTE) {
-        await new Promise(resolve => setTimeout(resolve, this.COOLDOWN_PERIOD));
+        const waitTime = this.COOLDOWN_PERIOD - (Date.now() - this.lastResetTime);
+        await new Promise(resolve => setTimeout(resolve, waitTime));
         this.requestCounter = 0;
+        this.lastResetTime = Date.now();
       }
 
       const prompt = `Analyze the sentiment of the following review text and provide a score between -1 (most negative) and 1 (most positive), and a label (positive, neutral, or negative).
@@ -49,7 +62,6 @@ export class DashboardSentimentService {
       const response = await result.response;
       const responseText = response.text().trim();
       
-      // Remove any markdown code block indicators and extra whitespace
       const cleanedResponse = responseText
         .replace(/```json\s*/g, '')
         .replace(/```\s*/g, '')
@@ -57,7 +69,6 @@ export class DashboardSentimentService {
 
       const sentimentResult = JSON.parse(cleanedResponse);
 
-      // Validate the response format
       if (!this.isValidSentimentResult(sentimentResult)) {
         throw new Error('Invalid sentiment result format');
       }
@@ -69,18 +80,16 @@ export class DashboardSentimentService {
         error instanceof Error && 
         (error.message.includes('429') || error.message.includes('quota'))
       ) {
-        // Wait and retry once on rate limit error
         await new Promise(resolve => setTimeout(resolve, 2000));
         return this.analyzeSentiment(text);
       }
-      // Return neutral sentiment as fallback
       return { score: 0, label: 'neutral' };
     }
   }
 
   async analyzeReviewsBatch(reviews: Review[]): Promise<SentimentResult[]> {
     const results: SentimentResult[] = [];
-    const batchSize = 5; // Process 5 reviews at a time
+    const batchSize = 25; // Increased from 5 to 25 for faster processing
     
     for (let i = 0; i < reviews.length; i += batchSize) {
       const batch = reviews.slice(i, i + batchSize);
@@ -89,9 +98,9 @@ export class DashboardSentimentService {
       );
       results.push(...batchResults);
       
-      // Add a small delay between batches to prevent rate limiting
+      // Reduced delay between batches since we have higher quota
       if (i + batchSize < reviews.length) {
-        await new Promise(resolve => setTimeout(resolve, 1000));
+        await new Promise(resolve => setTimeout(resolve, 100)); // Reduced from 1000ms to 100ms
       }
     }
     

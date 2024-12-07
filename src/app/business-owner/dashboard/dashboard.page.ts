@@ -15,7 +15,7 @@ interface Restaurant {
 
 interface Review {
   id: string;
-  rating: number;
+  stars: number;
   text: string;
   timestamp: Date;
   sentiment?: {
@@ -110,7 +110,7 @@ export class DashboardPage implements OnInit {
 
     // Calculate metrics
     const totalReviews = reviews.length;
-    const averageRating = reviews.reduce((acc, review) => acc + review.rating, 0) / totalReviews || 0;
+    const averageRating = reviews.reduce((acc, review) => acc + review.stars, 0) / totalReviews || 0;
 
     // Perform sentiment analysis for each review
     const reviewsWithSentiment = await Promise.all(
