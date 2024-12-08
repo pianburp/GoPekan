@@ -1,4 +1,3 @@
-<!-- dashboard.page.html -->
 <ion-header [translucent]="true" class="animate-item">
   <ion-toolbar>
     <ion-title (click)="navigateToHome()">GoPekan</ion-title>
@@ -81,6 +80,9 @@
             </div>
           </div>
         </ion-card-content>
+        <div class="icon-container" (click)="navigateToReviewDashboard(metrics.restaurantId)">
+          More Details &ensp;<ion-icon name="arrow-forward-outline"></ion-icon>
+      </div>
       </ion-card>
     </ng-container>
   </div>

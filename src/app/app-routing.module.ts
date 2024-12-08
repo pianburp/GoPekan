@@ -52,7 +52,7 @@ const routes: Routes = [
     loadChildren: () => import('./business-owner/edit-restaurant/edit-restaurant.module').then( m => m.EditRestaurantPageModule)
   },
   {
-    path: 'review-dashboard',
+    path: 'business/review-dashboard/:id',
     loadChildren: () => import('./business-owner/review-dashboard/review-dashboard.module').then( m => m.ReviewDashboardPageModule)
   }
 ];

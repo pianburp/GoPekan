@@ -1,8 +1,7 @@
-// dashboard.page.ts
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { Auth } from '@angular/fire/auth';
-import { Firestore, collection, query, where, getDocs, doc, getDoc, DocumentData } from '@angular/fire/firestore';
+import { Firestore, collection, query, where, getDocs, doc, DocumentData } from '@angular/fire/firestore';
 import { LoadingController, AlertController, PopoverController } from '@ionic/angular';
 import { DashboardSentimentService, SentimentResult } from '../../../services/dashboard-sentiment.service';
 
@@ -17,7 +16,6 @@ interface Review {
   id: string;
   stars: number;
   text: string;
-  timestamp: Date;
   sentiment?: {
     score: number;
     label: string;
@@ -188,5 +186,11 @@ export class DashboardPage implements OnInit {
 
   navigateToHome() {
     this.router.navigate(['business/home']);
+  }
+
+  navigateToReviewDashboard(restaurantId: string) {
+    if (restaurantId) {
+      this.router.navigate([`/business/review-dashboard/${restaurantId}`]);
+    }
   }
 }

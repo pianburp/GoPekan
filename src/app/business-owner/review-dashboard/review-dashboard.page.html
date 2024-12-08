@@ -1,13 +1,115 @@
-<ion-header [translucent]="true">
+<ion-header [translucent]="true" class="animate-item">
   <ion-toolbar>
-    <ion-title>review-dashboard</ion-title>
+    <ion-title (click)="navigateToHome()">GoPekan</ion-title>
   </ion-toolbar>
 </ion-header>
 
 <ion-content [fullscreen]="true">
-  <ion-header collapse="condense">
-    <ion-toolbar>
-      <ion-title size="large">review-dashboard</ion-title>
-    </ion-toolbar>
-  </ion-header>
+  <div class="dashboard-container">
+    <ion-title
+      >Analysis <br />
+      Dashboard</ion-title
+    >
+
+    <div *ngIf="loading" class="loading-spinner">
+      <ion-spinner></ion-spinner>
+    </div>
+
+    <div *ngIf="error" class="error-container">{{ error }}</div>
+
+    <ng-container *ngIf="reviewAnalysis$ | async as analysis">
+      <ion-card>
+        <div class="ion-padding">
+          <ion-card-title>Summary Review</ion-card-title>
+          <p>{{ analysis.summary }}</p>
+        </div>
+      </ion-card>
+
+      <ion-card>
+        <div class="ion-padding">
+          <ion-card-title>Mood Analysis</ion-card-title>
+          <div class="metrics-grid">
+            <div class="metric-card">
+              <div class="metric-value positive">
+                {{ analysis.mood.positive }}%
+              </div>
+              <div class="metric-label">Positive</div>
+            </div>
+            <div class="metric-card">
+              <div class="metric-value neutral">
+                {{ analysis.mood.neutral }}%
+              </div>
+              <div class="metric-label">Neutral</div>
+            </div>
+            <div class="metric-card">
+              <div class="metric-value negative">
+                {{ analysis.mood.negative }}%
+              </div>
+              <div class="metric-label">Negative</div>
+            </div>
+          </div>
+        </div>
+      </ion-card>
+
+      <ion-card>
+        <div class="ion-padding">
+          <ion-card-title color="success">Pros</ion-card-title>
+          <ion-list *ngFor="let pro of analysis.pros">
+            <ion-icon name="checkmark-circle" class="pros-icon"></ion-icon>
+            {{ pro }}
+          </ion-list>
+        </div>
+      </ion-card>
+
+      <ion-card>
+        <div class="ion-padding">
+          <ion-card-title color="danger">Cons</ion-card-title>
+          <ion-list *ngFor="let con of analysis.cons">
+            <ion-icon name="alert-circle" class="cons-icon"></ion-icon>
+            {{ con }}
+          </ion-list>
+        </div>
+      </ion-card>
+
+      <ion-card>
+        <div class="ion-padding">
+          <ion-card-title>Gemini Evaluation</ion-card-title>
+          <div class="rating-display">
+            {{ analysis.predictedStars | number:'1.1-1' }}
+            <span class="star">★</span>
+          </div>
+        </div>
+      </ion-card>
+
+      <ion-card>
+        <div class="ion-padding">
+          <ion-card-title>Future Trend</ion-card-title>
+          <div class="space-y-4">
+            <div class="flex justify-between items-center">
+              <span>Expected Reviews:&ensp;</span>
+              <span class="font-semibold"
+                >{{ analysis.trendPrediction.expectedReviews }}</span
+              >
+            </div>
+            <div class="flex justify-between items-center">
+              <span>Sentiment Trend:&ensp;</span>
+              <span
+                class="trend-indicator"
+                [class]="analysis.trendPrediction.sentimentTrend"
+              >
+                {{ analysis.trendPrediction.sentimentTrend | titlecase }} {{
+                getTrendIcon(analysis.trendPrediction.sentimentTrend) }}
+              </span>
+            </div>
+            <div class="flex justify-between items-center">
+              <span>Confidence:&ensp;</span>
+              <span class="font-semibold"
+                >{{ analysis.trendPrediction.confidence }}%</span
+              >
+            </div>
+          </div>
+        </div>
+      </ion-card>
+    </ng-container>
+  </div>
 </ion-content>
