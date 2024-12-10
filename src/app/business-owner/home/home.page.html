@@ -15,9 +15,13 @@
 <ion-content [scrollEvents]="true" (ionScroll)="handleScroll($event)">
   <div class="ion-padding">
     <div class="cards-container">
-      <ng-container *ngIf="restaurants.length > 0; else noRestaurants">
+      <!-- Show loading spinner when isLoading is true -->
+      <div *ngIf="isLoading" class="ion-text-center ion-padding">
+        <ion-spinner></ion-spinner>
+      </div>
+      <ng-container *ngIf="!isLoading && restaurants.length > 0">
         <ion-card
-          *ngFor="let restaurant of restaurants"
+        *ngFor="let restaurant of restaurants"
           (click)="navigateToEditRestaurant(restaurant.id)"
         >
           <ion-card-header>
@@ -32,16 +36,11 @@
         </ion-card>
       </ng-container>
 
-      <ng-template #noRestaurants>
-        <div class="no-restaurants">
-          <div class="ion-padding">
-            <ion-img src="assets/error.jpg" alt="No restaurants found"></ion-img>
-            <ion-text>
-              <h2>You haven't added any restaurants yet</h2>
-            </ion-text>
-          </div>
+      <div *ngIf="!isLoading && restaurants.length === 0" class="no-restaurants">
+        <div class="ion-padding">
+          <h2>You haven't added any restaurants yet</h2>
         </div>
-      </ng-template>
+      </div>
     </div>
   </div>
 

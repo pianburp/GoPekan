@@ -5,11 +5,23 @@ ion-header ion-title {
   animation-delay: 0.1s;
 }
 
-ion-content ion-title {
-  font-size: 2.5em;
-  font-weight: bolder;
-  animation-delay: 0.1s;
-  color: #cecece;
+ion-content {
+  ion-title.title-large {
+    font-size: 1.5em;
+    font-weight: bolder;
+    padding: 16px;
+    text-align: left;
+    max-height: none;
+    height: auto;
+    --color: white;
+    
+    &::part(native) {
+      position: relative;
+      transform: initial;
+      white-space: normal;
+      text-overflow: initial;
+    }
+  }
 }
 
 ion-toolbar {

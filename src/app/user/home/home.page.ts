@@ -35,7 +35,39 @@ export class HomePage implements OnInit {
 
   async ngOnInit() {
     await this.loadRestaurants();
+    await this.getTotalReviews();
   }
+
+  // Add this new function after loadRestaurants()
+async getTotalReviews() {
+  try {
+    let totalReviews = 0;
+    
+    // First get all restaurants
+    const restaurantsRef = collection(this.firestore, 'restaurant');
+    const restaurantSnapshot = await getDocs(restaurantsRef);
+    
+    // For each restaurant, get its reviews subcollection
+    for (const restaurantDoc of restaurantSnapshot.docs) {
+      const reviewsRef = collection(this.firestore, 'restaurant', restaurantDoc.id, 'reviews');
+      const reviewsSnapshot = await getDocs(reviewsRef);
+      
+      // Add the number of reviews for this restaurant
+      const restaurantReviews = reviewsSnapshot.size;
+      totalReviews += restaurantReviews;
+      
+      // Log individual restaurant review counts
+      console.log(`${restaurantDoc.data()['name']}: ${restaurantReviews} reviews`);
+    }
+    
+    // Log total reviews across all restaurants
+    console.log(`Total reviews across all restaurants: ${totalReviews}`);
+    return totalReviews;
+  } catch (error) {
+    console.error('Error counting total reviews:', error);
+    throw error;
+  }
+}
 
   async presentProfilePopover(event: any) {
     const popover = await this.popoverController.create({

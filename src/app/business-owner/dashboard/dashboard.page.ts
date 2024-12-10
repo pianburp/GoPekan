@@ -1,6 +1,6 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { Router } from '@angular/router';
-import { Auth } from '@angular/fire/auth';
+import { Auth, onAuthStateChanged, User, Unsubscribe } from '@angular/fire/auth';
 import { Firestore, collection, query, where, getDocs, doc, DocumentData } from '@angular/fire/firestore';
 import { LoadingController, AlertController, PopoverController } from '@ionic/angular';
 import { DashboardSentimentService, SentimentResult } from '../../../services/dashboard-sentiment.service';
@@ -40,10 +40,12 @@ interface RestaurantMetrics {
   templateUrl: './dashboard.page.html',
   styleUrls: ['./dashboard.page.scss']
 })
-export class DashboardPage implements OnInit {
+export class DashboardPage implements OnInit, OnDestroy {
   restaurants: Restaurant[] = [];
   restaurantMetrics: RestaurantMetrics[] = [];
   isLoading = false;
+  private authUnsubscribe: Unsubscribe | null = null;
+  private currentUser: User | null = null;
 
   constructor(
     private router: Router,
@@ -56,7 +58,31 @@ export class DashboardPage implements OnInit {
   ) {}
 
   async ngOnInit() {
-    await this.loadDashboardData();
+    // Set up auth state listener
+    this.authUnsubscribe = onAuthStateChanged(this.auth, async (user) => {
+      if (user) {
+        // User is signed in
+        this.currentUser = user;
+        await this.loadDashboardData();
+      } else {
+        // User is signed out
+        this.currentUser = null;
+        this.restaurants = [];
+        this.restaurantMetrics = [];
+        // Redirect to login page or home
+        this.router.navigate(['/login']);
+      }
+    }, (error) => {
+      console.error('Auth state error:', error);
+      this.showError('Authentication error occurred');
+    });
+  }
+
+  ngOnDestroy() {
+    // Clean up auth listener when component is destroyed
+    if (this.authUnsubscribe) {
+      this.authUnsubscribe();
+    }
   }
 
   async loadDashboardData() {
@@ -67,15 +93,14 @@ export class DashboardPage implements OnInit {
       });
       await loading.present();
 
-      // Get current user
-      const user = this.auth.currentUser;
-      if (!user) {
+      // Check if user is still authenticated
+      if (!this.currentUser) {
         throw new Error('No user logged in');
       }
 
       // Get restaurants owned by user
-      const restaurantsRef = collection(this.firestore, 'restaurant');  // Changed from 'restaurants' to 'restaurant' to match security rules
-      const q = query(restaurantsRef, where('ownerId', '==', user.uid));
+      const restaurantsRef = collection(this.firestore, 'restaurant');  
+      const q = query(restaurantsRef, where('ownerId', '==', this.currentUser.uid));
       const querySnapshot = await getDocs(q);
       
       this.restaurants = querySnapshot.docs.map(doc => ({
@@ -94,6 +119,10 @@ export class DashboardPage implements OnInit {
       console.error('Error loading dashboard:', error);
       this.showError('Failed to load dashboard data');
       this.isLoading = false;
+      const loading = await this.loadingCtrl.getTop();
+      if (loading) {
+        await loading.dismiss();
+      }
     }
   }
 
@@ -129,7 +158,7 @@ export class DashboardPage implements OnInit {
       { positive: 0, neutral: 0, negative: 0 }
     );
 
-    // Extract top keywords (simple implementation - can be enhanced)
+    // Extract top keywords
     const topKeywords = this.extractTopKeywords(reviews.map(r => r.text));
 
     return {

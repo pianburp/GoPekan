@@ -6,11 +6,6 @@
 
 <ion-content [fullscreen]="true">
   <div class="dashboard-container">
-    <ion-title
-      >Analysis <br />
-      Dashboard</ion-title
-    >
-
     <div *ngIf="loading" class="loading-spinner">
       <ion-spinner></ion-spinner>
     </div>
@@ -18,6 +13,8 @@
     <div *ngIf="error" class="error-container">{{ error }}</div>
 
     <ng-container *ngIf="reviewAnalysis$ | async as analysis">
+      <ion-title class="title-large">{{ analysis.restaurantName }}</ion-title>
+
       <ion-card>
         <div class="ion-padding">
           <ion-card-title>Summary Review</ion-card-title>
@@ -86,7 +83,7 @@
           <ion-card-title>Future Trend</ion-card-title>
           <div class="space-y-4">
             <div class="flex justify-between items-center">
-              <span>Expected Reviews:&ensp;</span>
+              <span>Expected Reviews for upcoming months:&ensp;</span>
               <span class="font-semibold"
                 >{{ analysis.trendPrediction.expectedReviews }}</span
               >

@@ -80,8 +80,10 @@
             </div>
           </div>
         </ion-card-content>
-        <div class="icon-container" (click)="navigateToReviewDashboard(metrics.restaurantId)">
-          More Details &ensp;<ion-icon name="arrow-forward-outline"></ion-icon>
+        <div class="icon-container">
+          <ion-button (click)="navigateToReviewDashboard(metrics.restaurantId)">
+            More Details &ensp;<ion-icon name="arrow-forward-outline"></ion-icon>
+          </ion-button>
       </div>
       </ion-card>
     </ng-container>
