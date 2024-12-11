@@ -13,7 +13,7 @@
     <div *ngIf="error" class="error-container">{{ error }}</div>
 
     <ng-container *ngIf="reviewAnalysis$ | async as analysis">
-      <ion-title class="title-large">{{ analysis.restaurantName }}</ion-title>
+      <div class="custom-title">{{ analysis.restaurantName }}</div>
 
       <ion-card>
         <div class="ion-padding">

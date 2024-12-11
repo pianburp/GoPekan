@@ -2,10 +2,12 @@ import { Injectable } from '@angular/core';
 import { Observable, from } from 'rxjs';
 import { environment } from '../environments/environment';
 import { GoogleGenerativeAI } from '@google/generative-ai';
+import { Timestamp } from '@angular/fire/firestore';
 
 export interface Review {
   text: string;
   stars: number;
+  createdAt: Timestamp;
 }
 
 export interface ReviewAnalysis {
@@ -17,6 +19,7 @@ export interface ReviewAnalysis {
   };
   strengths: string[];
   weaknesses: string[];
+  predictedRating: number;
 }
 
 @Injectable({
@@ -52,21 +55,28 @@ export class ReviewAnalysisService {
     - [List 3-4 key strengths]
 
     WEAKNESSES:
-    - [List 3-4 areas for improvement]`;
+    - [List 3-4 areas for improvement]
+
+   PREDICTED RATING:
+    [Calculate a star rating between 1-5 based on the sentiment percentages: 
+    - If positive% is dominant, rating should be between 4-5
+    - If neutral% is dominant, rating should be between 2.5-3.5
+    - If negative% is dominant, rating should be between 1-2
+    Provide the final number with one decimal place]`;
   }
 
   private parseResponse(responseText: string): ReviewAnalysis {
     const sections = responseText.split('\n\n');
     
-    // Extract sections
     const summarySection = sections.find(s => s.includes('SUMMARY:'))?.replace('SUMMARY:', '').trim() || '';
     const sentimentSection = sections.find(s => s.includes('SENTIMENT:')) || '';
     const strengthsSection = sections.find(s => s.includes('STRENGTHS:')) || '';
     const weaknessesSection = sections.find(s => s.includes('WEAKNESSES:')) || '';
-
-    // Parse sentiment percentages
+    const ratingSection = sections.find(s => s.includes('PREDICTED RATING:')) || '';
+  
     const sentimentMatches = sentimentSection.match(/\d+(\.\d+)?/g)?.map(Number) || [0, 0, 0];
-
+    const predictedRating = parseFloat(ratingSection.replace('PREDICTED RATING:', '').trim()) || 0;
+  
     return {
       summary: summarySection,
       sentiment: {
@@ -75,7 +85,8 @@ export class ReviewAnalysisService {
         neutral: sentimentMatches[2] || 0
       },
       strengths: this.parseListItems(strengthsSection),
-      weaknesses: this.parseListItems(weaknessesSection)
+      weaknesses: this.parseListItems(weaknessesSection),
+      predictedRating
     };
   }
 

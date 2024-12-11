@@ -1,23 +1,56 @@
+// First, define the fade-in keyframes
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+// Add animation mixin for reusability
+@mixin fadeInAnimation($delay: 0s) {
+  animation: fadeIn 0.5s ease-out forwards;
+  animation-delay: $delay;
+  opacity: 0; // Start with opacity 0
+}
+
 ion-header ion-title {
   font-size: 2em;
   font-weight: bolder;
   color: #9ac1fc;
-  animation-delay: 0.1s;
+  @include fadeInAnimation(0.1s);
 }
 
 ion-content ion-title {
   font-size: 3em;
   font-weight: bolder;
-  animation-delay: 0.1s;
   color: #cecece;
+  @include fadeInAnimation(0.2s);
 }
+
 ion-toolbar {
   --background: var(--ion-background-color);
+}
+
+ion-button {
+  --background: rgba(255, 255, 255, 0.24);
+  --color: white;
+  border-radius: 8px;
+  @include fadeInAnimation(0.3s);
+  
+  ion-icon {
+    color: white;
+    opacity: 1;
+  }
 }
 
 ion-card {
   margin: 16px;
   border-radius: 8px;
+  @include fadeInAnimation(0.2s);
 
   ion-card-header {
     padding: 16px;
@@ -32,11 +65,11 @@ ion-card {
       font-size: 0.8em;
     }
   }
-  
 }
 
 .dashboard-container {
   padding: 16px;
+  @include fadeInAnimation(0.1s);
 
   ion-spinner {
     display: block;
@@ -48,6 +81,7 @@ ion-card {
 .sentiment-section,
 .keywords-section {
   margin-bottom: 20px;
+  @include fadeInAnimation(0.3s);
 
   h2 {
     font-size: 1.2rem;
@@ -61,6 +95,7 @@ ion-card {
   padding: 16px;
   border-radius: 8px;
   text-align: center;
+  @include fadeInAnimation(0.4s);
 
   .metric-value {
     font-size: 1.5rem;
@@ -79,6 +114,7 @@ ion-card {
   text-align: center;
   padding: 12px;
   border-radius: 8px;
+  @include fadeInAnimation(0.5s);
 
   h4 {
     font-size: 0.8rem;
@@ -111,6 +147,7 @@ ion-card {
   display: flex;
   flex-wrap: wrap;
   gap: 8px;
+  @include fadeInAnimation(0.6s);
 
   ion-chip {
     --background: var(--ion-color-light);
@@ -123,4 +160,5 @@ ion-card {
   display: flex;
   justify-content: flex-end;
   padding: 0 16px 16px;
+  @include fadeInAnimation(0.7s);
 }

@@ -57,19 +57,29 @@ ion-card-title {
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 4px;
+  gap: 8px;
 
   .rating-stars {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+
     ion-icon {
       font-size: 24px;
       margin-right: 4px;
     }
-  }
 
-  .rating-number {
-    font-size: 1.2rem;
-    font-weight: bold;
-    color: var(--ion-color-dark);
+    span {
+      font-size: 1.2rem;
+      font-weight: bold;
+      color: var(--ion-color-dark);
+    }
+
+    &.predicted {
+      ion-icon {
+        color: #8187fc;
+      }
+    }
   }
 }
 
