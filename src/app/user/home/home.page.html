@@ -8,14 +8,19 @@
     </ion-buttons>
   </ion-toolbar>
   <ion-toolbar [class.collapsed]="isSearchbarCollapsed">
-    <ion-searchbar placeholder="Search..."></ion-searchbar>
+    <ion-searchbar 
+      placeholder="Search restaurants..." 
+      (ionInput)="handleSearch($event)"
+      [animated]="true"
+      [debounce]="300">
+    </ion-searchbar>
   </ion-toolbar>
 </ion-header>
 
 <ion-content [scrollEvents]="true" (ionScroll)="handleScroll($event)">
   <div class="ion-padding">
     <div class="cards-container">
-      <ion-card *ngFor="let restaurant of restaurants" class="restaurant-card" (click)="navigateToReviews(restaurant.id)">
+      <ion-card *ngFor="let restaurant of filteredRestaurants" class="restaurant-card" (click)="navigateToReviews(restaurant.id)">
         <ion-card-header>
           <ion-card-title>{{ restaurant.name }}</ion-card-title>
         </ion-card-header>
@@ -23,9 +28,24 @@
           {{ restaurant.desc }}
         </ion-card-content>
         <div class="icon-container">
-            <ion-icon name="arrow-forward-outline"></ion-icon>
+          <ion-icon name="arrow-forward-outline"></ion-icon>
         </div>
       </ion-card>
+      
+      <!-- Loading spinner -->
+      <div *ngIf="isLoading" class="loading-container">
+        <ion-spinner></ion-spinner>
+        <ion-text color="medium">
+          <p>Loading restaurants...</p>
+        </ion-text>
+      </div>
+
+      <!-- No results message - only show when not loading -->
+      <div *ngIf="!isLoading && filteredRestaurants.length === 0" class="no-results">
+        <ion-text color="medium">
+          <h5>No restaurants found matching your search</h5>
+        </ion-text>
+      </div>
     </div>
   </div>
 </ion-content>

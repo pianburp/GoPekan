@@ -158,37 +158,30 @@
 
       <!-- Rating Summary Section -->
 
-      <div class="rating-summary ion-padding">
-        <div class="average-rating animate__animated animate__fadeIn animate__delay-1s">
-          <!-- Actual Rating Stars -->
+      <div class="rating-summary">
+        <div class="average-rating">
           <div class="rating-stars">
             <span>Actual</span>
-            <ion-icon
-              *ngFor="let star of getStars(averageRating)"
-              [name]="star ? 'star' : 'star-outline'"
-              color="warning"
-              class="animate__animated animate__fadeIn"
-            >
-            </ion-icon>
-            <span>{{ averageRating }} / 5</span>
-          </div>
-      
-          <!-- Predicted Rating Stars -->
-          <ng-container *ngIf="reviewAnalysis">
-            <div class="rating-stars predicted">
-              <span>Gemini</span>
-              <ion-icon
-                *ngFor="let star of getStars(reviewAnalysis?.predictedRating || 0)"
-                [name]="star ? 'star' : 'star-outline'"
-                [style.color]="'#8187fc'"
-                class="animate__animated animate__fadeIn"
-              >
+            <div class="stars-container">
+              <ion-icon *ngFor="let star of getStars(averageRating)" 
+                        [name]="star ? 'star' : 'star-outline'"
+                        color="warning">
               </ion-icon>
-              <span>{{ reviewAnalysis?.predictedRating | number:'1.1-1' }} / 5</span>
             </div>
-          </ng-container>
+            <p>{{ averageRating }} / 5</p>
+          </div>
+          
+          <div class="rating-stars predicted">
+            <span>Gemini</span>
+            <div class="stars-container">
+              <ion-icon *ngFor="let star of getStars(reviewAnalysis?.predictedRating || 0)"
+                        [name]="star ? 'star' : 'star-outline'">
+              </ion-icon>
+            </div>
+            <p>{{ reviewAnalysis?.predictedRating | number:'1.1-1' }} / 5</p>
+          </div>
         </div>
-        <div class="total-reviews animate__animated animate__fadeIn animate__delay-1s">
+        <div class="total-reviews">
           {{ totalReviews }} {{ totalReviews === 1 ? 'Review' : 'Reviews' }}
         </div>
       </div>

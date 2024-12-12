@@ -10,7 +10,7 @@ import { ProfilePopoverComponent } from './components/profile-popover.component'
 interface Restaurant {
   name: string;
   desc: string;
-  id: string; 
+  id: string;
 }
 
 @Component({
@@ -20,8 +20,11 @@ interface Restaurant {
 })
 export class HomePage implements OnInit {
   restaurants: Restaurant[] = [];
+  filteredRestaurants: Restaurant[] = [];
   isSearchbarCollapsed: boolean = false;
   lastScrollPosition: number = 0;
+  searchTerm: string = '';
+  isLoading: boolean = false;
 
   constructor(
     private auth: Auth,
@@ -31,73 +34,99 @@ export class HomePage implements OnInit {
     private popoverController: PopoverController,
     private platform: Platform,
     private firestore: Firestore
-  ) { }
+  ) {}
 
   async ngOnInit() {
     await this.loadRestaurants();
+    this.filteredRestaurants = [...this.restaurants];
     await this.getTotalReviews();
   }
 
-  // Add this new function after loadRestaurants()
-async getTotalReviews() {
-  try {
-    let totalReviews = 0;
-    
-    // First get all restaurants
-    const restaurantsRef = collection(this.firestore, 'restaurant');
-    const restaurantSnapshot = await getDocs(restaurantsRef);
-    
-    // For each restaurant, get its reviews subcollection
-    for (const restaurantDoc of restaurantSnapshot.docs) {
-      const reviewsRef = collection(this.firestore, 'restaurant', restaurantDoc.id, 'reviews');
-      const reviewsSnapshot = await getDocs(reviewsRef);
-      
-      // Add the number of reviews for this restaurant
-      const restaurantReviews = reviewsSnapshot.size;
-      totalReviews += restaurantReviews;
-      
-      // Log individual restaurant review counts
-      console.log(`${restaurantDoc.data()['name']}: ${restaurantReviews} reviews`);
-    }
-    
-    // Log total reviews across all restaurants
-    console.log(`Total reviews across all restaurants: ${totalReviews}`);
-    return totalReviews;
-  } catch (error) {
-    console.error('Error counting total reviews:', error);
-    throw error;
+  handleSearch(event: any) {
+    this.searchTerm = event.target.value.toLowerCase();
+    this.filterRestaurants();
   }
-}
+
+  filterRestaurants() {
+    if (!this.searchTerm) {
+      this.filteredRestaurants = [...this.restaurants];
+      return;
+    }
+
+    this.filteredRestaurants = this.restaurants.filter(restaurant => {
+      return (
+        restaurant.name.toLowerCase().includes(this.searchTerm) ||
+        restaurant.desc.toLowerCase().includes(this.searchTerm)
+      );
+    });
+  }
+
+  async getTotalReviews() {
+    try {
+      let totalReviews = 0;
+
+      // First get all restaurants
+      const restaurantsRef = collection(this.firestore, 'restaurant');
+      const restaurantSnapshot = await getDocs(restaurantsRef);
+
+      // For each restaurant, get its reviews subcollection
+      for (const restaurantDoc of restaurantSnapshot.docs) {
+        const reviewsRef = collection(
+          this.firestore,
+          'restaurant',
+          restaurantDoc.id,
+          'reviews'
+        );
+        const reviewsSnapshot = await getDocs(reviewsRef);
+
+        // Add the number of reviews for this restaurant
+        const restaurantReviews = reviewsSnapshot.size;
+        totalReviews += restaurantReviews;
+
+        // Log individual restaurant review counts
+        console.log(
+          `${restaurantDoc.data()['name']}: ${restaurantReviews} reviews`
+        );
+      }
+
+      // Log total reviews across all restaurants
+      console.log(`Total reviews across all restaurants: ${totalReviews}`);
+      return totalReviews;
+    } catch (error) {
+      console.error('Error counting total reviews:', error);
+      throw error;
+    }
+  }
 
   async presentProfilePopover(event: any) {
     const popover = await this.popoverController.create({
       component: ProfilePopoverComponent,
       event: event,
       dismissOnSelect: true,
-      translucent: true
+      translucent: true,
     });
-    
+
     await popover.present();
   }
 
   handleScroll(event: any) {
     const currentScrollPosition = event.detail.scrollTop;
-    
-    if (currentScrollPosition > this.lastScrollPosition && currentScrollPosition > 50) {
+
+    if (
+      currentScrollPosition > this.lastScrollPosition &&
+      currentScrollPosition > 50
+    ) {
       this.isSearchbarCollapsed = true;
     } else if (currentScrollPosition < this.lastScrollPosition) {
       this.isSearchbarCollapsed = false;
     }
-    
+
     this.lastScrollPosition = currentScrollPosition;
   }
 
   async loadRestaurants() {
     try {
-      const loading = await this.loadingCtrl.create({
-        message: 'Loading restaurants...'
-      });
-      await loading.present();
+      this.isLoading = true;
 
       const restaurantsRef = collection(this.firestore, 'restaurant');
       const querySnapshot = await getDocs(restaurantsRef);
@@ -106,9 +135,11 @@ async getTotalReviews() {
         ...(doc.data() as Omit<Restaurant, 'id'>),
         id: doc.id 
       }));
-
-      await loading.dismiss();
+      
+      this.filteredRestaurants = [...this.restaurants];
+      this.isLoading = false;
     } catch (error) {
+      this.isLoading = false;
       console.error('Error loading restaurants:', error);
       const alert = await this.alertCtrl.create({
         header: 'Error',
@@ -124,12 +155,12 @@ async getTotalReviews() {
       const alert = await this.alertCtrl.create({
         header: 'Error',
         message: 'Restaurant ID not found.',
-        buttons: ['OK']
+        buttons: ['OK'],
       });
       await alert.present();
       return;
     }
-  
+
     try {
       await this.router.navigate(['/user/review', restaurantId]);
     } catch (error) {
@@ -137,7 +168,7 @@ async getTotalReviews() {
       const alert = await this.alertCtrl.create({
         header: 'Error',
         message: 'Unable to load reviews. Please try again.',
-        buttons: ['OK']
+        buttons: ['OK'],
       });
       await alert.present();
     }
@@ -164,7 +195,7 @@ async getTotalReviews() {
       const alert = await this.alertCtrl.create({
         header: 'Error',
         message: 'Failed to logout. Please try again.',
-        buttons: ['OK']
+        buttons: ['OK'],
       });
       await alert.present();
     }

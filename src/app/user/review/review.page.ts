@@ -116,7 +116,6 @@ export class ReviewPage implements OnInit {
             latitude: restaurantData.coordinates.latitude,
             longitude: restaurantData.coordinates.longitude
           };
-          console.log('Restaurant coordinates loaded:', this.restaurantLocation);
         } else {
           console.warn('No coordinates available for this restaurant');
           this.restaurantLocation = null;
@@ -134,7 +133,6 @@ export class ReviewPage implements OnInit {
       return;
     }
   
-    console.log('Loading reviews for restaurant:', this.restaurantId);
     const loading = await this.loadingCtrl.create({
       message: 'Loading reviews and analysis...'
     });
@@ -142,16 +140,11 @@ export class ReviewPage implements OnInit {
     try {
       await loading.present();
   
-      const reviewsRef = collection(this.firestore, 'restaurant', this.restaurantId, 'reviews');
-      console.log('Reviews reference created');
-      
+      const reviewsRef = collection(this.firestore, 'restaurant', this.restaurantId, 'reviews');     
       const querySnapshot = await getDocs(reviewsRef);
-      console.log('Got query snapshot, number of reviews:', querySnapshot.size);
       
       this.reviews = querySnapshot.docs.map(doc => {
         const data = doc.data() as Review;
-        console.log('Raw review data:', data);
-        
         return {
           ...data,
           id: doc.id,
@@ -176,7 +169,6 @@ export class ReviewPage implements OnInit {
             .subscribe({
               next: (analysis) => {
                 this.reviewAnalysis = analysis;
-                console.log('Review analysis completed:', analysis);
               },
               error: async (error) => {
                 console.error('Error analyzing reviews:', error);
@@ -196,8 +188,6 @@ export class ReviewPage implements OnInit {
           this.isAnalyzing = false;
         }
       }
-      
-      console.log('Final processed reviews:', this.reviews);
   
     } catch (error) {
       console.error('Error loading reviews:', error);
@@ -238,7 +228,6 @@ export class ReviewPage implements OnInit {
         .subscribe({
           next: (analysis) => {
             this.reviewAnalysis = analysis;
-            console.log('Review analysis completed:', analysis);
           },
           error: async (error) => {
             console.error('Error analyzing reviews:', error);
