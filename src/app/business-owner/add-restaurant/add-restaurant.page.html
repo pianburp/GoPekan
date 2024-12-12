@@ -6,56 +6,98 @@
 
 <ion-content [fullscreen]="true">
   <ion-card class="animate-item">
-    <ion-img src="assets\44069.jpg"></ion-img>
-    <ion-card-header>
-      <ion-card-title>Add Restaurant</ion-card-title>
-    </ion-card-header>
-    <ion-card-content>
-      <ion-item>
-        <ion-icon name="person-outline" slot="start"></ion-icon>
-        <ion-input
-          type="text"
-          fill="solid"
-          label="Name"
-          labelPlacement="floating"
-          errorText="Invalid name"
-        ></ion-input>
-      </ion-item>
-      <ion-item>
-        <ion-icon name="location-outline" slot="start"></ion-icon>
-        <ion-input
-          type="text"
-          fill="solid"
-          label="Address"
-          labelPlacement="floating"
-        ></ion-input>
-      </ion-item>
-      <ion-item>
-        <ion-icon name="fast-food-outline" slot="start"></ion-icon>
-        <ion-select
-          aria-label="cuisine-type"
-          interface="action-sheet"
-          placeholder="Cuisine Type"
-        >
-          <ion-select-option value="local-food">Local Food</ion-select-option>
-          <ion-select-option value="western">Western</ion-select-option>
-          <ion-select-option value="pastries">Pastries</ion-select-option>
-          <ion-select-option value="noodle">Noodle</ion-select-option>
-          <ion-select-option value="snack">Snack</ion-select-option>
-        </ion-select>
-      </ion-item>
-      <ion-item>
-        <ion-icon name="text" slot="start"></ion-icon>
-        <ion-textarea
-          aria-label="Custom textarea"
-          placeholder="Restaurant's description"
-          class="custom"
-          helperText="Helper text"
-          [counter]="true"
-          [maxlength]="100"
-        ></ion-textarea>
-      </ion-item>
-      <ion-button expand="block">Add Restaurant</ion-button>
-    </ion-card-content>
+    <form #restaurantForm="ngForm" (ngSubmit)="addRestaurant()">
+      <ion-card-header>
+        <ion-card-title>Add Restaurant</ion-card-title>
+      </ion-card-header>
+
+      <ion-card-content>
+        <ion-item>
+          <ion-icon name="person-outline" slot="start"></ion-icon>
+          <ion-input
+            type="text"
+            fill="solid"
+            label="Name"
+            labelPlacement="floating"
+            name="name"
+            [(ngModel)]="restaurant.name"
+            required
+          ></ion-input>
+        </ion-item>
+
+        <ion-item>
+          <ion-icon name="location-outline" slot="start"></ion-icon>
+          <ion-input
+            type="text"
+            fill="solid"
+            label="Address"
+            labelPlacement="floating"
+            name="address"
+            [(ngModel)]="restaurant.address"
+            required
+          ></ion-input>
+        </ion-item>
+
+          <!-- Map Section -->
+           <ion-item>
+            <ion-label>Select coordinates</ion-label>
+           </ion-item>         
+           <app-restaurant-map
+           [latitude]="restaurant.coordinates.latitude"
+           [longitude]="restaurant.coordinates.longitude"
+           (coordinatesSelected)="onCoordinatesSelected($event)"
+         ></app-restaurant-map>
+
+        <ion-item>
+          <ion-icon name="fast-food-outline" slot="start"></ion-icon>
+          <ion-select
+            aria-label="cuisine-type"
+            interface="action-sheet"
+            placeholder="Cuisine Type"
+            name="type"
+            [(ngModel)]="restaurant.type"
+            required
+          >
+            <ion-select-option value="local-food">Local Food</ion-select-option>
+            <ion-select-option value="western">Western</ion-select-option>
+            <ion-select-option value="pastries">Pastries</ion-select-option>
+            <ion-select-option value="noodle">Noodle</ion-select-option>
+            <ion-select-option value="snack">Snack</ion-select-option>
+          </ion-select>
+        </ion-item>
+
+        <ion-item>
+          <ion-icon name="text" slot="start"></ion-icon>
+          <ion-textarea
+            aria-label="Custom textarea"
+            placeholder="Restaurant's description"
+            class="custom"
+            [counter]="true"
+            [maxlength]="100"
+            name="desc"
+            [(ngModel)]="restaurant.desc"
+            required
+          ></ion-textarea>
+        </ion-item>
+
+        <ion-item>
+          <ion-icon name="camera-outline" slot="start"></ion-icon>
+          <div class="image-upload-container">
+            <div class="image-preview" *ngIf="imagePreview">
+              <img [src]="imagePreview" alt="Restaurant preview" />
+            </div>
+            <input
+              type="file"
+              (change)="onFileSelected($event)"
+              accept="image/*"
+            />
+          </div>
+        </ion-item>
+
+        <ion-button expand="block" type="submit" [disabled]="!isFormValid()">
+          Add Restaurant
+        </ion-button>
+      </ion-card-content>
+    </form>
   </ion-card>
 </ion-content>
