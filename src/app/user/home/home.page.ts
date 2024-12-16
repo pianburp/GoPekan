@@ -11,6 +11,7 @@ interface Restaurant {
   name: string;
   desc: string;
   id: string;
+  imageUrl?: string;
 }
 
 @Component({
@@ -40,6 +41,13 @@ export class HomePage implements OnInit {
     await this.loadRestaurants();
     this.filteredRestaurants = [...this.restaurants];
     await this.getTotalReviews();
+  }
+
+  handleImageError(event: Event) {
+    const imgElement = event.target as HTMLImageElement;
+    if (imgElement) {
+      imgElement.src = 'https://ionicframework.com/docs/img/demos/card-media.png';
+    }
   }
 
   handleSearch(event: any) {

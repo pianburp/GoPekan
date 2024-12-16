@@ -44,7 +44,7 @@ ion-header {
       transform: translateY(0);
       opacity: 1;
       transition: all 0.35s cubic-bezier(0.4, 0, 0.2, 1);
-      
+
       &.collapsed {
         transform: translateY(-100%);
         opacity: 0;
@@ -59,12 +59,12 @@ ion-popover {
   --width: 200px;
   --backdrop-opacity: 0.4;
   --box-shadow: 0 4px 16px rgba(0, 0, 0, 0.12);
-  
+
   &::part(content) {
     border-radius: 8px;
     animation: scaleIn 0.2s ease-out;
   }
-  
+
   ion-list {
     margin: 0;
     padding: 0;
@@ -73,7 +73,7 @@ ion-popover {
   ion-item {
     --padding-start: 16px;
     --padding-end: 16px;
-    
+
     ion-icon {
       margin-right: 8px;
     }
@@ -89,18 +89,18 @@ ion-card {
   opacity: 0;
   animation: fadeInUp 0.7s ease-out forwards;
   position: relative;
-  
+
   @for $i from 1 through 20 {
     &:nth-child(#{$i}) {
       animation-delay: #{$i * 0.1}s;
     }
   }
-  
+
   ion-card-title {
     font-size: 1.2rem;
     font-weight: bolder;
   }
-  
+
   ion-card-content {
     padding: 0 16px 16px;
     color: #8c8c8c;
@@ -111,14 +111,22 @@ ion-card {
     justify-content: flex-end;
     padding: 0 16px 16px;
   }
-  
+
   &:hover {
     transform: translateY(-2px);
     transition: transform 0.2s ease;
   }
 }
 
-  ion-icon {
-    font-size: 24px;
-    color: #ffffff;
+ion-icon {
+  font-size: 24px;
+  color: #ffffff;
+}
+
+ion-card {
+  img {
+    width: 100%;
+    height: 200px;
+    object-fit: cover;
   }
+}

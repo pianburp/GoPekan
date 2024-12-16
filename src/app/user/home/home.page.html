@@ -20,14 +20,17 @@
 <ion-content [scrollEvents]="true" (ionScroll)="handleScroll($event)">
   <div class="ion-padding">
     <div class="cards-container">
-      <ion-card *ngFor="let restaurant of filteredRestaurants" class="restaurant-card" (click)="navigateToReviews(restaurant.id)">
+      <ion-card *ngFor="let restaurant of filteredRestaurants" class="restaurant-card" >
+        <img [alt]="restaurant.name" 
+    [src]="restaurant.imageUrl || 'https://ionicframework.com/docs/img/demos/card-media.png'"
+    (error)="handleImageError($event)" />
         <ion-card-header>
           <ion-card-title>{{ restaurant.name }}</ion-card-title>
         </ion-card-header>
         <ion-card-content>
           {{ restaurant.desc }}
         </ion-card-content>
-        <div class="icon-container">
+        <div class="icon-container" (click)="navigateToReviews(restaurant.id)">
           <ion-icon name="arrow-forward-outline"></ion-icon>
         </div>
       </ion-card>

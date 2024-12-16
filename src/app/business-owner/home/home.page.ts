@@ -10,6 +10,7 @@ interface Restaurant {
   name: string;
   desc: string;
   ownerId: string;
+  imageUrl?: string;
 }
 
 @Component({
@@ -73,6 +74,13 @@ export class HomePage implements OnInit, OnDestroy {
     });
     
     await popover.present();
+  }
+
+  handleImageError(event: Event) {
+    const imgElement = event.target as HTMLImageElement;
+    if (imgElement) {
+      imgElement.src = 'https://ionicframework.com/docs/img/demos/card-media.png';
+    }
   }
 
   async loadRestaurants() {

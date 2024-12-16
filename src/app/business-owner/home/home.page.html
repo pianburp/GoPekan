@@ -24,6 +24,9 @@
         *ngFor="let restaurant of restaurants"
           (click)="navigateToEditRestaurant(restaurant.id)"
         >
+        <img [alt]="restaurant.name" 
+    [src]="restaurant.imageUrl || 'https://ionicframework.com/docs/img/demos/card-media.png'"
+    (error)="handleImageError($event)" />
           <ion-card-header>
             <ion-card-title>{{ restaurant.name }}</ion-card-title>
           </ion-card-header>

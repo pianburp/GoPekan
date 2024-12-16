@@ -1,0 +1,53 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-title>Upload Restaurant Image</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content class="ion-padding">
+  <ion-card>
+    <ion-card-header>
+      <ion-card-title>Upload Image</ion-card-title>
+    </ion-card-header>
+
+    <ion-card-content>
+      <!-- Restaurant Selection -->
+      <ion-item>
+        <ion-label position="stacked">Select Restaurant</ion-label>
+        <ion-select [(ngModel)]="selectedRestaurant">
+          <ion-select-option *ngFor="let restaurant of restaurants" [value]="restaurant">
+            {{restaurant.name}}
+          </ion-select-option>
+        </ion-select>
+      </ion-item>
+
+      <!-- File Input -->
+      <ion-item>
+        <ion-label position="stacked">Select Image</ion-label>
+        <input type="file" 
+               accept="image/*" 
+               (change)="onFileSelected($event)" 
+               class="ion-margin-top">
+      </ion-item>
+
+      <!-- Image Preview -->
+      <div class="image-preview-container" *ngIf="selectedImage">
+        <img [src]="selectedImage" alt="Selected image preview">
+      </div>
+
+      <!-- Upload Progress -->
+      <ion-progress-bar *ngIf="uploadProgress > 0" [value]="uploadProgress / 100"></ion-progress-bar>
+
+      <!-- Upload Button -->
+      <div class="ion-padding">
+        <ion-button expand="block" 
+                    (click)="uploadImage()" 
+                    [disabled]="!selectedImage || !selectedRestaurant"
+                    color="success">
+          <ion-icon name="cloud-upload-outline" slot="start"></ion-icon>
+          Upload Image
+        </ion-button>
+      </div>
+    </ion-card-content>
+  </ion-card>
+</ion-content>
