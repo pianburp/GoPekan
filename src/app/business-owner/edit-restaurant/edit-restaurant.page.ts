@@ -12,6 +12,7 @@ interface Restaurant {
   type: string;  
   phone: string;
   ownerId: string;
+  imageUrl?: string;
 }
 
 @Component({
@@ -47,6 +48,13 @@ export class EditRestaurantPage implements OnInit {
     }
   }
 
+  handleImageError(event: Event) {
+    const imgElement = event.target as HTMLImageElement;
+    if (imgElement) {
+      imgElement.src = 'https://ionicframework.com/docs/img/demos/card-media.png';
+    }
+  }
+
   async loadRestaurantData() {
     if (!this.restaurantId) return;
 
@@ -68,7 +76,8 @@ export class EditRestaurantPage implements OnInit {
           address: data.address || '',
           type: data.type || '',
           phone: data.phone || '',  
-          ownerId: data.ownerId
+          ownerId: data.ownerId,
+          imageUrl: data.imageUrl || ''
         };
       } else {
         const alert = await this.alertCtrl.create({

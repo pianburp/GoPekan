@@ -44,4 +44,12 @@
   ion-toolbar{
     --background: var(--ion-background-color);
   }
+
+  ion-card {
+    img {
+      width: 100%;
+      aspect-ratio: 1/1;
+      object-fit: cover;
+    }
+  }
   

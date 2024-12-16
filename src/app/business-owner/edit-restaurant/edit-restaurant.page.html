@@ -6,7 +6,9 @@
 
 <ion-content class="ion-padding">
   <ion-card class="animate-item">
-    <ion-img src="assets\44069.jpg"></ion-img>
+    <ion-img 
+      [src]="restaurant.imageUrl || 'https://ionicframework.com/docs/img/demos/card-media.png'"
+      (ionError)="handleImageError($event)"></ion-img>
     <ion-card-header>
       <ion-card-title class="ion-text-center">
         Update Your Restaurant Details
