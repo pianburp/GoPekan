@@ -56,8 +56,8 @@ const routes: Routes = [
     loadChildren: () => import('./business-owner/review-dashboard/review-dashboard.module').then( m => m.ReviewDashboardPageModule)
   },
   {
-    path: 'image',
-    loadChildren: () => import('./image/image.module').then( m => m.ImagePageModule)
+    path: 'operating',
+    loadChildren: () => import('./operating/operating.module').then( m => m.OperatingPageModule)
   }
 ];
 

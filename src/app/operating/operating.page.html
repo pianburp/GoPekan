@@ -1,0 +1,66 @@
+<!-- operating.page.html -->
+<ion-header>
+  <ion-toolbar>
+    <ion-title>Operating Hours</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content class="ion-padding">
+  <ion-item>
+    <ion-label>Select Restaurant</ion-label>
+    <ion-select 
+      [(ngModel)]="selectedRestaurantId"
+      (ionChange)="onRestaurantChange($event)"
+      placeholder="Choose a restaurant">
+      <ion-select-option 
+        *ngFor="let restaurant of restaurants" 
+        [value]="restaurant.id">
+        {{restaurant.name}}
+      </ion-select-option>
+    </ion-select>
+  </ion-item>
+
+  <div *ngIf="selectedRestaurantId" class="ion-margin-top">
+    <ion-item>
+      <ion-label>Open 24/7</ion-label>
+      <ion-toggle [(ngModel)]="is24HoursEnabled" (ionChange)="toggle24Hours($event.detail.checked)"></ion-toggle>
+    </ion-item>
+
+    <ion-list *ngIf="!is24HoursEnabled">
+      <ion-item-group *ngFor="let day of days">
+        <ion-item>
+          <ion-label>{{getDayDisplayName(day)}}</ion-label>
+          <ion-toggle [(ngModel)]="operatingHours[day].isOpen"></ion-toggle>
+        </ion-item>
+        
+        <ion-item *ngIf="operatingHours[day].isOpen">
+          <ion-label position="stacked">Opening Time</ion-label>
+          <ion-input
+            type="time"
+            [(ngModel)]="operatingHours[day].open"
+            placeholder="Opening time">
+          </ion-input>
+        </ion-item>
+        
+        <ion-item *ngIf="operatingHours[day].isOpen">
+          <ion-label position="stacked">Closing Time</ion-label>
+          <ion-input
+            type="time"
+            [(ngModel)]="operatingHours[day].close"
+            placeholder="Closing time">
+          </ion-input>
+        </ion-item>
+      </ion-item-group>
+    </ion-list>
+
+    <div *ngIf="is24HoursEnabled" class="ion-padding">
+      <ion-text color="medium">
+        <p>This restaurant is open 24 hours a day, 7 days a week.</p>
+      </ion-text>
+    </div>
+
+    <ion-button expand="block" (click)="saveOperatingHours()" class="ion-margin-top">
+      Save Operating Hours
+    </ion-button>
+  </div>
+</ion-content>

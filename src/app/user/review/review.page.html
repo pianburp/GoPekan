@@ -45,6 +45,31 @@
             <ion-icon name="information-circle" color="medium"></ion-icon>
             <ion-text>{{ restaurantDesc }}</ion-text>
           </div>
+
+          <!-- Operating Hours Section -->
+          <div
+            class="detail-item hours-item animate__animated animate__fadeIn animate__delay-1000ms"
+          >
+            <ion-icon name="time" color="medium"></ion-icon>
+            <div class="hours-container">
+              <ng-container *ngIf="operatingHours">
+                <div *ngIf="isOpen24Hours()" class="hours-text">
+                  Open 24 hours
+                </div>
+                <ng-container *ngIf="!isOpen24Hours()">
+                  <div *ngFor="let day of days" class="day-hours">
+                    <span class="day-name">{{getDayDisplayName(day)}}</span>
+                    <span class="hours-text" *ngIf="operatingHours[day]">
+                      {{getFormattedHours(operatingHours[day])}}
+                    </span>
+                  </div>
+                </ng-container>
+              </ng-container>
+              <div *ngIf="!operatingHours" class="hours-text">
+                Hours not available
+              </div>
+            </div>
+          </div>
         </div>
       </div>
 
@@ -53,12 +78,11 @@
         class="map-section animate__animated animate__fadeIn animate__delay-1s"
         *ngIf="restaurantLocation"
       >
-        <app-restaurant-map
-          [latitude]="restaurantLocation.latitude ?? 0"
-          [longitude]="restaurantLocation.longitude ?? 0"
-          [restaurantName]="restaurantName"
-        >
-        </app-restaurant-map>
+      <app-restaurant-map
+      [latitude]="restaurantLocation?.latitude"
+      [longitude]="restaurantLocation?.longitude"
+      [restaurantName]="restaurantName">
+    </app-restaurant-map>
       </div>
 
       <!-- Analysis Section -->

@@ -13,6 +13,18 @@ interface Review {
   id?: string;
 }
 
+interface HoursData {
+  open: string;
+  close: string;
+  isOpen: boolean;
+  spanNextDay?: boolean;
+  holidayNote?: string;
+}
+
+interface OperatingHours {
+  [key: string]: HoursData;
+}
+
 interface Restaurant {
   name: string;
   desc: string;
@@ -23,6 +35,7 @@ interface Restaurant {
     latitude: number;
     longitude: number;
   };
+  operatingHours?: OperatingHours;
 }
 
 @Component({
@@ -38,6 +51,8 @@ export class ReviewPage implements OnInit {
   restaurantAddress: string = '';
   restaurantPhone: string = '';
   restaurantType: string = '';
+  operatingHours: OperatingHours | null = null;
+  days = ['monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday', 'sunday'];
   averageRating: number = 0;
   totalReviews: number = 0;
   restaurantLocation: { latitude: number; longitude: number } | null = null;
@@ -74,12 +89,10 @@ export class ReviewPage implements OnInit {
     this.updateDisplayedReviews();
   }
   
-  // Helper method to safely get Date from Timestamp
   getDate(timestamp: Timestamp): Date {
     return timestamp.toDate();
   }
 
-  // Helper method to calculate average rating
   calculateAverageRating(): void {
     if (this.reviews.length === 0) {
       this.averageRating = 0;
@@ -90,7 +103,6 @@ export class ReviewPage implements OnInit {
     this.averageRating = Number((sum / this.reviews.length).toFixed(1));
   }
 
-  // Helper method to get star array for template
   getStars(rating: number): number[] {
     return Array(5).fill(0).map((_, index) => index < Math.round(rating) ? 1 : 0);
   }
@@ -109,8 +121,8 @@ export class ReviewPage implements OnInit {
         this.restaurantAddress = restaurantData.address;
         this.restaurantPhone = restaurantData.phone;
         this.restaurantType = restaurantData.type;
+        this.operatingHours = restaurantData.operatingHours || null;
         
-        // Handle the coordinates data
         if (restaurantData.coordinates) {
           this.restaurantLocation = {
             latitude: restaurantData.coordinates.latitude,
@@ -152,16 +164,13 @@ export class ReviewPage implements OnInit {
         };
       });
   
-      // Sort reviews by date (most recent first)
       this.reviews.sort((a, b) => {
         return b.createdAt.seconds - a.createdAt.seconds;
       });
       
-      // Update metrics
       this.totalReviews = this.reviews.length;
       this.calculateAverageRating();
       
-      // Automatically analyze reviews if there are any
       if (this.reviews.length > 0) {
         this.isAnalyzing = true;
         try {
@@ -205,6 +214,31 @@ export class ReviewPage implements OnInit {
   navigateToHome() {
     this.router.navigate(['/user/home']);
   }
+
+  getDayDisplayName(day: string): string {
+    return day.charAt(0).toUpperCase() + day.slice(1);
+  }
+
+  getFormattedHours(hours: HoursData): string {
+    if (!hours.isOpen) return 'Closed';
+    let timeStr = `${hours.open} - ${hours.close}`;
+    if (hours.spanNextDay) {
+      timeStr += ' (next day)';
+    }
+    if (hours.holidayNote) {
+      timeStr += ` (${hours.holidayNote})`;
+    }
+    return timeStr;
+  }
+
+  isOpen24Hours(): boolean {
+    if (!this.operatingHours) return false;
+    return this.days.every(day => {
+      const hours = this.operatingHours?.[day];
+      return hours?.isOpen && hours?.open === '00:00' && hours?.close === '23:59';
+    });
+  }
+
   async analyzeReviews() {
     if (this.reviews.length === 0) {
       const alert = await this.alertCtrl.create({
@@ -249,5 +283,4 @@ export class ReviewPage implements OnInit {
       this.isAnalyzing = false;
     }
   }
-  
 }
