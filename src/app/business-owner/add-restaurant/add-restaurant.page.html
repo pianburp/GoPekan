@@ -7,6 +7,25 @@
 <ion-content [fullscreen]="true">
   <ion-card class="animate-item">
     <form #restaurantForm="ngForm" (ngSubmit)="addRestaurant()">
+      <div class="image-container">
+        <ion-img 
+          [src]="imagePreview || 'https://ionicframework.com/docs/img/demos/card-media.png'"
+          class="restaurant-image">
+        </ion-img>
+        <div class="image-upload-overlay">
+          <label for="file-input" class="upload-button">
+            <ion-icon name="camera"></ion-icon>
+            Add Image
+          </label>
+          <input 
+            type="file" 
+            id="file-input" 
+            (change)="onFileSelected($event)" 
+            accept="image/*"
+            style="display: none;">
+        </div>
+      </div>
+
       <ion-card-header>
         <ion-card-title>Add Restaurant</ion-card-title>
       </ion-card-header>
@@ -66,6 +85,89 @@
           </ion-select>
         </ion-item>
 
+        <ion-item-divider>
+          <ion-label>Operating Hours</ion-label>
+        </ion-item-divider>
+        
+        <div class="hours-container">
+          <ion-item class="hours-24">
+            <ion-checkbox [(ngModel)]="is24Hours" (ionChange)="toggle24Hours()" name="is24Hours">
+              Open 24 Hours
+            </ion-checkbox>
+          </ion-item>
+        
+          <ng-container *ngIf="!is24Hours">
+            <div class="day-card" *ngFor="let day of days">
+              <!-- Day Header -->
+              <div class="day-header">
+                <ion-label class="day-name">{{ getDayDisplayName(day) }}</ion-label>
+                <ion-toggle 
+                  [(ngModel)]="restaurant.operatingHours[day].isOpen"
+                  name="isOpen{{day}}"
+                  class="day-toggle">
+                </ion-toggle>
+              </div>
+        
+              <!-- Time Controls -->
+              <div class="time-controls" *ngIf="restaurant.operatingHours[day].isOpen">
+                <!-- Opening Time -->
+                <div class="time-row">
+                  <ion-label>Opens</ion-label>
+                  <div class="time-input-container">
+                    <ion-input
+                      type="time"
+                      [(ngModel)]="restaurant.operatingHours[day].open"
+                      name="open{{day}}"
+                      class="time-input">
+                    </ion-input>
+                    <ion-icon name="time-outline" class="time-icon"></ion-icon>
+                  </div>
+                </div>
+        
+                <!-- Closing Time -->
+                <div class="time-row">
+                  <ion-label>Closes</ion-label>
+                  <div class="time-input-container">
+                    <ion-input
+                      type="time"
+                      [(ngModel)]="restaurant.operatingHours[day].close"
+                      name="close{{day}}"
+                      class="time-input">
+                    </ion-input>
+                    <ion-icon name="time-outline" class="time-icon"></ion-icon>
+                  </div>
+                </div>
+        
+                <!-- Next Day Option -->
+                <div class="next-day-row">
+                  <ion-checkbox
+                    [(ngModel)]="restaurant.operatingHours[day].spanNextDay"
+                    name="span{{day}}"
+                    class="next-day-checkbox">
+                  </ion-checkbox>
+                  <ion-label>
+                    Extends to next day
+                    <ion-icon name="arrow-forward-outline"></ion-icon>
+                  </ion-label>
+                </div>
+              </div>
+            </div>
+          </ng-container>
+        </div>
+
+        <ion-item>
+          <ion-icon name="call-outline" slot="start"></ion-icon>
+          <ion-input
+            type="tel"
+            label="Phone Number"
+            labelPlacement="floating"
+            name="phone"
+            [(ngModel)]="restaurant.phone"
+            required
+            placeholder="e.g., 0123456789"
+          ></ion-input>
+        </ion-item>
+
         <ion-item>
           <ion-icon name="text" slot="start"></ion-icon>
           <ion-textarea
@@ -78,20 +180,6 @@
             [(ngModel)]="restaurant.desc"
             required
           ></ion-textarea>
-        </ion-item>
-
-        <ion-item>
-          <ion-icon name="camera-outline" slot="start"></ion-icon>
-          <div class="image-upload-container">
-            <div class="image-preview" *ngIf="imagePreview">
-              <img [src]="imagePreview" alt="Restaurant preview" />
-            </div>
-            <input
-              type="file"
-              (change)="onFileSelected($event)"
-              accept="image/*"
-            />
-          </div>
         </ion-item>
 
         <ion-button expand="block" type="submit" [disabled]="!isFormValid()">

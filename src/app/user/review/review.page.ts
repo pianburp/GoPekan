@@ -13,6 +13,12 @@ interface Review {
   id?: string;
 }
 
+interface RestaurantStatus {
+  status: 'open' | 'closing-soon' | 'closed';
+  message: string;
+  nextOpenTime?: string;
+}
+
 interface HoursData {
   open: string;
   close: string;
@@ -282,5 +288,81 @@ export class ReviewPage implements OnInit {
       loading.dismiss();
       this.isAnalyzing = false;
     }
+  }
+  getRestaurantStatus(): RestaurantStatus {
+    if (!this.operatingHours) {
+      return { status: 'closed', message: 'Status unknown' };
+    }
+
+    if (this.isOpen24Hours()) {
+      return { status: 'open', message: 'Open 24 hours' };
+    }
+
+    const now = new Date();
+    const currentDay = this.days[now.getDay() === 0 ? 6 : now.getDay() - 1]; // Convert to Monday-based index
+    const currentHours = this.operatingHours[currentDay];
+
+    if (!currentHours || !currentHours.isOpen) {
+      return this.getNextOpenTime(now);
+    }
+
+    const currentTime = `${String(now.getHours()).padStart(2, '0')}:${String(now.getMinutes()).padStart(2, '0')}`;
+    const [openHour, openMinute] = currentHours.open.split(':').map(Number);
+    const [closeHour, closeMinute] = currentHours.close.split(':').map(Number);
+
+    // Convert current time to minutes for easier comparison
+    const currentMinutes = now.getHours() * 60 + now.getMinutes();
+    const openMinutes = openHour * 60 + openMinute;
+    const closeMinutes = closeHour * 60 + closeMinute;
+
+    // Handle cases where closing time is on the next day
+    const isSpanningNextDay = currentHours.spanNextDay;
+    const adjustedCloseMinutes = isSpanningNextDay ? closeMinutes + 24 * 60 : closeMinutes;
+    const adjustedCurrentMinutes = currentMinutes < openMinutes && isSpanningNextDay ? 
+      currentMinutes + 24 * 60 : currentMinutes;
+
+    // Check if restaurant is open
+    if (adjustedCurrentMinutes >= openMinutes && adjustedCurrentMinutes < adjustedCloseMinutes) {
+      // Check if closing soon (within 60 minutes)
+      const minutesUntilClose = adjustedCloseMinutes - adjustedCurrentMinutes;
+      if (minutesUntilClose <= 60) {
+        return {
+          status: 'closing-soon',
+          message: `Closing soon (in ${minutesUntilClose} minutes)`
+        };
+      }
+      return { status: 'open', message: 'Open now' };
+    }
+
+    return this.getNextOpenTime(now);
+  }
+
+  private getNextOpenTime(now: Date): RestaurantStatus {
+    let checkDate = new Date(now);
+    let daysChecked = 0;
+
+    while (daysChecked < 7) {
+      const dayIndex = checkDate.getDay() === 0 ? 6 : checkDate.getDay() - 1;
+      const dayName = this.days[dayIndex];
+      const hours = this.operatingHours![dayName];
+
+      if (hours && hours.isOpen) {
+        const nextOpenTime = hours.open;
+        const formattedDay = daysChecked === 0 ? 'today' : 
+                            daysChecked === 1 ? 'tomorrow' : 
+                            this.getDayDisplayName(dayName);
+        
+        return {
+          status: 'closed',
+          message: 'Closed now',
+          nextOpenTime: `Opens ${formattedDay} at ${nextOpenTime}`
+        };
+      }
+
+      checkDate.setDate(checkDate.getDate() + 1);
+      daysChecked++;
+    }
+
+    return { status: 'closed', message: 'Temporarily closed' };
   }
 }

@@ -70,6 +70,21 @@
               </div>
             </div>
           </div>
+          <!-- Status feature -->
+          <div class="status-chip" *ngIf="operatingHours">
+            <div class="status-indicator" [ngClass]="getRestaurantStatus().status">
+              <ion-icon [name]="getRestaurantStatus().status === 'open' ? 'checkmark-circle' : 
+                                getRestaurantStatus().status === 'closing-soon' ? 'time' : 'close-circle'">
+              </ion-icon>
+              <div class="status-text">
+                <strong>{{ getRestaurantStatus().message }}</strong>
+                <span *ngIf="getRestaurantStatus().nextOpenTime">
+                  {{ getRestaurantStatus().nextOpenTime }}
+                </span>
+              </div>
+            </div>
+          </div>
+
         </div>
       </div>
 

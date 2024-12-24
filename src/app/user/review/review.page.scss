@@ -636,3 +636,61 @@ ion-toolbar {
 .sentiment-bar {
   transition: width 0.3s ease, transform 0.2s ease, filter 0.2s ease;
 }
+
+.status-chip {
+  margin: 16px auto;
+  width: fit-content;
+  
+  .status-indicator {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 16px;
+    border-radius: 16px;
+    background: rgba(55, 65, 81, 0.5);
+    backdrop-filter: blur(4px);
+    
+    ion-icon {
+      font-size: 20px;
+    }
+    
+    .status-text {
+      display: flex;
+      flex-direction: column;
+      
+      strong {
+        font-size: 1rem;
+        color: #fff;
+      }
+      
+      span {
+        font-size: 0.8rem;
+        color: rgba(255, 255, 255, 0.7);
+      }
+    }
+    
+    &.open {
+      background: rgba(16, 185, 129, 0.2);
+      
+      ion-icon {
+        color: #10B981;
+      }
+    }
+    
+    &.closing-soon {
+      background: rgba(245, 158, 11, 0.2);
+      
+      ion-icon {
+        color: #F59E0B;
+      }
+    }
+    
+    &.closed {
+      background: rgba(239, 68, 68, 0.2);
+      
+      ion-icon {
+        color: #EF4444;
+      }
+    }
+  }
+}
