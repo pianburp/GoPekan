@@ -163,4 +163,18 @@ export class HomePage implements OnInit, OnDestroy {
     });
     await alert.present();
   }
+
+  async navigateToReviews(restaurantId: string) {
+    if (!restaurantId) {
+      await this.showError('Restaurant ID not found.');
+      return;
+    }
+  
+    try {
+      await this.router.navigate(['/business/review', restaurantId]);
+    } catch (error) {
+      console.error('Navigation error:', error);
+      await this.showError('Unable to view reviews. Please try again.');
+    }
+  }
 }

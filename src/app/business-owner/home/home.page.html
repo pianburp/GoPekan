@@ -21,9 +21,7 @@
       </div>
       <ng-container *ngIf="!isLoading && restaurants.length > 0">
         <ion-card
-        *ngFor="let restaurant of restaurants"
-          (click)="navigateToEditRestaurant(restaurant.id)"
-        >
+        *ngFor="let restaurant of restaurants">
         <img [alt]="restaurant.name" 
     [src]="restaurant.imageUrl || 'https://ionicframework.com/docs/img/demos/card-media.png'"
     (error)="handleImageError($event)" />
@@ -34,7 +32,12 @@
             <p>{{ restaurant.desc }}</p>
           </ion-card-content>
           <div class="icon-container">
-            <ion-icon name="create-outline"></ion-icon>
+            <div class="icon-wrapper">
+                <ion-icon name="create-outline" (click)="navigateToEditRestaurant(restaurant.id)"></ion-icon>
+            </div>
+            <div class="icon-wrapper">
+                <ion-icon name="document-text-outline" (click)="navigateToReviews(restaurant.id)"></ion-icon>
+            </div>
         </div>
         </ion-card>
       </ng-container>

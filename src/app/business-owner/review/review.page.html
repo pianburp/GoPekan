@@ -1,0 +1,66 @@
+<ion-header [translucent]="true" class="animate-item">
+  <ion-toolbar>
+    <ion-title (click)="navigateToHome()">GoPekan</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content [fullscreen]="true">
+  <ion-title class="ion-padding">Restaurant Reviews</ion-title>
+
+  <div *ngIf="isLoading" class="loading-container">
+    <ion-spinner name="circular"></ion-spinner>
+    <p>Loading reviews...</p>
+  </div>
+  
+  <div class="ion-padding" [class.hide-content]="isLoading">
+    <ion-card *ngFor="let review of reviews | async">
+      <ion-card-header>
+        <ion-card-subtitle>
+          <ion-icon 
+            *ngFor="let star of getStarArray(review.stars)" 
+            name="star" 
+            color="warning">
+          </ion-icon>
+          <span class="date">{{ formatDate(review.createdAt) }}</span>
+        </ion-card-subtitle>
+      </ion-card-header>
+
+      <ion-card-content>
+        <p>{{ review.text }}</p>
+
+        <!-- Owner Reply Section -->
+        <div class="owner-reply" *ngIf="review.ownerReply">
+          <ion-text color="primary">
+            <h6>Owner's Response - {{ formatDate(review.ownerReply.createdAt) }}</h6>
+            <p>{{ review.ownerReply.text }}</p>
+          </ion-text>
+        </div>
+
+        <!-- Reply Form for Owner -->
+        <div class="reply-form" *ngIf="isOwner && !review.ownerReply">
+          <ion-item>
+            <ion-label position="stacked">Reply to this review</ion-label>
+            <ion-textarea 
+              [(ngModel)]="replyText"
+              placeholder="Write your response...">
+            </ion-textarea>
+          </ion-item>
+          <ion-button 
+          expand="block" 
+          fill="clear"
+          *ngIf="review.id"
+          (click)="replyToReview(review.id)">
+          Submit Reply
+        </ion-button>
+        </div>
+      </ion-card-content>
+    </ion-card>
+  </div>
+
+  <!-- No Reviews Message -->
+  <div class="ion-padding ion-text-center" *ngIf="(reviews | async)?.length === 0">
+    <ion-text color="medium">
+      <p>No reviews yet</p>
+    </ion-text>
+  </div>
+</ion-content>

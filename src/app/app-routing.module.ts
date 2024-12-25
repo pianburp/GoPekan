@@ -56,8 +56,12 @@ const routes: Routes = [
     loadChildren: () => import('./business-owner/review-dashboard/review-dashboard.module').then( m => m.ReviewDashboardPageModule)
   },
   {
-    path: 'operating',
-    loadChildren: () => import('./operating/operating.module').then( m => m.OperatingPageModule)
+    path: 'business/review/:id',
+    loadChildren: () => import('./business-owner/review/review.module').then( m => m.ReviewPageModule)
+  },
+  {
+    path: 'admin/home',
+    loadChildren: () => import('./admin/home/home.module').then( m => m.HomePageModule)
   }
 ];
 

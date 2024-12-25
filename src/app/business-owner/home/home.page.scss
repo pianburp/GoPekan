@@ -139,3 +139,19 @@ ion-content {
 .cards-container {
   padding-bottom: 80px;  
 }
+
+.icon-container {
+  display: flex;
+  align-items: center;
+  gap: 20px; // Creates space between icons
+  
+  .icon-wrapper {
+    padding: 8px; // Creates clickable padding around each icon
+    cursor: pointer;
+    
+    ion-icon {
+      font-size: 24px; // Makes icons larger and more clickable
+      color: var(--ion-color-medium);
+    }
+  }
+}
