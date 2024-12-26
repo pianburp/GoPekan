@@ -33,6 +33,7 @@ interface Restaurant {
   phone: string;
   coordinates: GeoPoint;
   operatingHours: OperatingHours;
+  isVerified: boolean;
 }
 
 
@@ -60,7 +61,8 @@ export class AddRestaurantPage implements OnInit, OnDestroy {
     ownerId: '',  
     phone: '',
     coordinates: new GeoPoint(3.4922367966846597, 103.39242973104015),
-    operatingHours: this.initializeOperatingHours()
+    operatingHours: this.initializeOperatingHours(),
+    isVerified: false
   };
   
   selectedImage: File | null = null;
@@ -199,7 +201,8 @@ export class AddRestaurantPage implements OnInit, OnDestroy {
       const restaurantData: Restaurant = {
         ...this.restaurant,
         imageUrl,
-        ownerId: this.currentUser.uid
+        ownerId: this.currentUser.uid,
+        isVerified: false  
       };
 
       const restaurantsRef = collection(this.firestore, 'restaurant');

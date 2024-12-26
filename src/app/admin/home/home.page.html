@@ -1,13 +1,60 @@
 <ion-header [translucent]="true">
   <ion-toolbar>
-    <ion-title>home</ion-title>
+    <ion-title>GoPekan</ion-title>
+    <ion-buttons slot="end">
+      <ion-button (click)="logout()">
+        <ion-icon name="log-out-outline" size="large"></ion-icon>
+      </ion-button>
+    </ion-buttons>
   </ion-toolbar>
 </ion-header>
 
 <ion-content [fullscreen]="true">
-  <ion-header collapse="condense">
-    <ion-toolbar>
-      <ion-title size="large">home</ion-title>
-    </ion-toolbar>
-  </ion-header>
+  <ion-card>
+    <ion-card-header>
+      <ion-card-title color="warning">Not Verified</ion-card-title>
+    </ion-card-header>
+    <ion-card-content>
+      <ion-list>
+        <ion-item *ngFor="let restaurant of unverifiedRestaurants">
+          <ion-thumbnail slot="start" *ngIf="restaurant.imageUrl">
+            <img [src]="restaurant.imageUrl" alt="Restaurant image">
+          </ion-thumbnail>
+          <ion-label>
+            <h2>{{ restaurant.name }}</h2>
+            <p>{{ restaurant.desc }}</p>
+          </ion-label>
+          <ion-button slot="end" color="success" (click)="verifyRestaurant(restaurant)">
+            <ion-icon name="checkmark-circle-outline"></ion-icon>
+            Verify
+          </ion-button>
+        </ion-item>
+        <ion-item *ngIf="unverifiedRestaurants.length === 0">
+          <ion-label>No unverified restaurants found</ion-label>
+        </ion-item>
+      </ion-list>
+    </ion-card-content>
+  </ion-card>
+
+  <ion-card>
+    <ion-card-header>
+      <ion-card-title color="success">Verified</ion-card-title>
+    </ion-card-header>
+    <ion-card-content>
+      <ion-list>
+        <ion-item *ngFor="let restaurant of verifiedRestaurants">
+          <ion-thumbnail slot="start" *ngIf="restaurant.imageUrl">
+            <img [src]="restaurant.imageUrl" alt="Restaurant image">
+          </ion-thumbnail>
+          <ion-label>
+            <h2>{{ restaurant.name }}</h2>
+            <p>{{ restaurant.desc }}</p>
+          </ion-label>
+        </ion-item>
+        <ion-item *ngIf="verifiedRestaurants.length === 0">
+          <ion-label>No verified restaurants found</ion-label>
+        </ion-item>
+      </ion-list>
+    </ion-card-content>
+  </ion-card>
 </ion-content>

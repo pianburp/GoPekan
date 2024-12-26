@@ -1,10 +1,9 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { LoadingController, AlertController, PopoverController } from '@ionic/angular';
-import { Auth } from '@angular/fire/auth';
-import { signOut } from '@angular/fire/auth';
+import { Auth , signOut } from '@angular/fire/auth';
 import { Platform } from '@ionic/angular';
-import { Firestore, collection, getDocs } from '@angular/fire/firestore';
+import { Firestore, collection, getDocs , query, where, DocumentData} from '@angular/fire/firestore';
 import { ProfilePopoverComponent } from './components/profile-popover.component';
 
 interface Restaurant {
@@ -12,6 +11,7 @@ interface Restaurant {
   desc: string;
   id: string;
   imageUrl?: string;
+  isVerified: boolean;
 }
 
 @Component({
@@ -73,9 +73,10 @@ export class HomePage implements OnInit {
     try {
       let totalReviews = 0;
 
-      // First get all restaurants
+      // First get all verified restaurants only
       const restaurantsRef = collection(this.firestore, 'restaurant');
-      const restaurantSnapshot = await getDocs(restaurantsRef);
+      const verifiedQuery = query(restaurantsRef, where('isVerified', '==', true));
+      const restaurantSnapshot = await getDocs(verifiedQuery);
 
       // For each restaurant, get its reviews subcollection
       for (const restaurantDoc of restaurantSnapshot.docs) {
@@ -91,14 +92,12 @@ export class HomePage implements OnInit {
         const restaurantReviews = reviewsSnapshot.size;
         totalReviews += restaurantReviews;
 
-        // Log individual restaurant review counts
         console.log(
           `${restaurantDoc.data()['name']}: ${restaurantReviews} reviews`
         );
       }
 
-      // Log total reviews across all restaurants
-      console.log(`Total reviews across all restaurants: ${totalReviews}`);
+      console.log(`Total reviews across all verified restaurants: ${totalReviews}`);
       return totalReviews;
     } catch (error) {
       console.error('Error counting total reviews:', error);
@@ -137,7 +136,9 @@ export class HomePage implements OnInit {
       this.isLoading = true;
 
       const restaurantsRef = collection(this.firestore, 'restaurant');
-      const querySnapshot = await getDocs(restaurantsRef);
+      // Create a query to only get verified restaurants
+      const verifiedQuery = query(restaurantsRef, where('isVerified', '==', true));
+      const querySnapshot = await getDocs(verifiedQuery);
       
       this.restaurants = querySnapshot.docs.map(doc => ({
         ...(doc.data() as Omit<Restaurant, 'id'>),
@@ -157,6 +158,7 @@ export class HomePage implements OnInit {
       await alert.present();
     }
   }
+
 
   async navigateToReviews(restaurantId: string) {
     if (!restaurantId) {
