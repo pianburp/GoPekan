@@ -97,7 +97,7 @@ ion-card {
   }
 
   ion-card-title {
-    font-size: 1.2rem;
+    font-size: 1.5rem;
     font-weight: bolder;
   }
 
@@ -154,4 +154,44 @@ ion-content {
       color: var(--ion-color-medium);
     }
   }
+}
+
+.image-container {
+  position: relative;
+  width: 100%;
+  
+  img {
+    width: 100%;
+    height: auto;
+    display: block;
+  }
+}
+
+.unverified-image {
+  filter: blur(5px);
+  opacity: 0.2;
+  transition: filter 0.3s ease-in-out, opacity 0.3s ease-in-out;
+}
+
+.verification-overlay {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  padding: 10px 20px;
+  border-radius: 5px;
+  z-index: 1;
+  
+  span {
+    color: white;
+    font-size: 1.2em;
+    text-align: center;
+    white-space: nowrap;
+  }
+}
+
+// Optional: Add hover effect to show the image more clearly on hover
+.unverified-image:hover {
+  filter: blur(3px);
+  opacity: 0.4;
 }

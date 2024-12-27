@@ -10,6 +10,7 @@ interface Restaurant {
   name: string;
   desc: string;
   ownerId: string;
+  isVerified: boolean;
 }
 
 interface Review {
@@ -92,27 +93,31 @@ export class DashboardPage implements OnInit, OnDestroy {
         message: 'Loading dashboard...'
       });
       await loading.present();
-
+  
       // Check if user is still authenticated
       if (!this.currentUser) {
         throw new Error('No user logged in');
       }
-
-      // Get restaurants owned by user
+  
+      // Get verified restaurants owned by user
       const restaurantsRef = collection(this.firestore, 'restaurant');  
-      const q = query(restaurantsRef, where('ownerId', '==', this.currentUser.uid));
+      const q = query(
+        restaurantsRef, 
+        where('ownerId', '==', this.currentUser.uid),
+        where('isVerified', '==', true) // Added filter for verified restaurants
+      );
       const querySnapshot = await getDocs(q);
       
       this.restaurants = querySnapshot.docs.map(doc => ({
         id: doc.id,
         ...doc.data()
       } as Restaurant));
-
-      // Get metrics for each restaurant
+  
+      // Get metrics for each verified restaurant
       this.restaurantMetrics = await Promise.all(
         this.restaurants.map(restaurant => this.getRestaurantMetrics(restaurant))
       );
-
+  
       await loading.dismiss();
       this.isLoading = false;
     } catch (error) {

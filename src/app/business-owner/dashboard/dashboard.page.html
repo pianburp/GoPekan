@@ -5,13 +5,33 @@
 </ion-header>
 
 <ion-content [fullscreen]="true">
+  <ion-title>My <br> Dashboard</ion-title>
   <div class="dashboard-container">
     <!-- Loading spinner -->
-    <ion-spinner *ngIf="isLoading"></ion-spinner>
+    <div *ngIf="isLoading" class="loading-container">
+      <ion-spinner></ion-spinner>
+    </div>
+
+    <!-- Content when not loading -->
+    <ng-container *ngIf="!isLoading">
+      <!-- No verified restaurants message -->
+      <div *ngIf="restaurantMetrics.length === 0" class="no-verified-restaurants">
+        <ion-card>
+          <ion-card-content>
+            <div class="message-container">
+              <ion-icon name="alert-circle-outline" size="large"></ion-icon>
+              <h2>No Verified Restaurants</h2>
+              <p>Your restaurants need to be verified before metrics will be displayed here.</p>
+              <ion-button (click)="navigateToHome()" fill="clear">
+                Go to Restaurants
+                <ion-icon name="arrow-forward-outline" slot="end"></ion-icon>
+              </ion-button>
+            </div>
+          </ion-card-content>
+        </ion-card>
+      </div>
 
     <!-- Dashboard content -->
-    <ng-container *ngIf="!isLoading">
-      <ion-title>My <br> Dashboard</ion-title>
       <!-- Metrics for each restaurant -->
       <ion-card *ngFor="let metrics of restaurantMetrics">
         <ion-card-header>

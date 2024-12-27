@@ -11,6 +11,7 @@ interface Restaurant {
   desc: string;
   ownerId: string;
   imageUrl?: string;
+  isVerified: boolean;
 }
 
 @Component({

@@ -22,9 +22,16 @@
       <ng-container *ngIf="!isLoading && restaurants.length > 0">
         <ion-card
         *ngFor="let restaurant of restaurants">
-        <img [alt]="restaurant.name" 
-    [src]="restaurant.imageUrl || 'https://ionicframework.com/docs/img/demos/card-media.png'"
-    (error)="handleImageError($event)" />
+        <div class="image-container">
+          <img 
+            [alt]="restaurant.name" 
+            [src]="restaurant.imageUrl || 'https://ionicframework.com/docs/img/demos/card-media.png'"
+            (error)="handleImageError($event)"
+            [ngClass]="{'unverified-image': !restaurant.isVerified}" />
+          <div class="verification-overlay" *ngIf="!restaurant.isVerified">
+            <span>Not verified yet</span>
+          </div>
+        </div>
           <ion-card-header>
             <ion-card-title>{{ restaurant.name }}</ion-card-title>
           </ion-card-header>
