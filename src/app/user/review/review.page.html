@@ -72,9 +72,14 @@
           </div>
           <!-- Status feature -->
           <div class="status-chip" *ngIf="operatingHours">
-            <div class="status-indicator" [ngClass]="getRestaurantStatus().status">
-              <ion-icon [name]="getRestaurantStatus().status === 'open' ? 'checkmark-circle' : 
-                                getRestaurantStatus().status === 'closing-soon' ? 'time' : 'close-circle'">
+            <div
+              class="status-indicator"
+              [ngClass]="getRestaurantStatus().status"
+            >
+              <ion-icon
+                [name]="getRestaurantStatus().status === 'open' ? 'checkmark-circle' : 
+                                getRestaurantStatus().status === 'closing-soon' ? 'time' : 'close-circle'"
+              >
               </ion-icon>
               <div class="status-text">
                 <strong>{{ getRestaurantStatus().message }}</strong>
@@ -84,7 +89,6 @@
               </div>
             </div>
           </div>
-
         </div>
       </div>
 
@@ -93,11 +97,12 @@
         class="map-section animate__animated animate__fadeIn animate__delay-1s"
         *ngIf="restaurantLocation"
       >
-      <app-restaurant-map
-      [latitude]="restaurantLocation?.latitude"
-      [longitude]="restaurantLocation?.longitude"
-      [restaurantName]="restaurantName">
-    </app-restaurant-map>
+        <app-restaurant-map
+          [latitude]="restaurantLocation?.latitude"
+          [longitude]="restaurantLocation?.longitude"
+          [restaurantName]="restaurantName"
+        >
+        </app-restaurant-map>
       </div>
 
       <!-- Analysis Section -->
@@ -202,19 +207,23 @@
           <div class="rating-stars">
             <span>Actual</span>
             <div class="stars-container">
-              <ion-icon *ngFor="let star of getStars(averageRating)" 
-                        [name]="star ? 'star' : 'star-outline'"
-                        color="warning">
+              <ion-icon
+                *ngFor="let star of getStars(averageRating)"
+                [name]="star ? 'star' : 'star-outline'"
+                color="warning"
+              >
               </ion-icon>
             </div>
             <p>{{ averageRating }} / 5</p>
           </div>
-          
+
           <div class="rating-stars predicted">
             <span>Gemini</span>
             <div class="stars-container">
-              <ion-icon *ngFor="let star of getStars(reviewAnalysis?.predictedRating || 0)"
-                        [name]="star ? 'star' : 'star-outline'">
+              <ion-icon
+                *ngFor="let star of getStars(reviewAnalysis?.predictedRating || 0)"
+                [name]="star ? 'star' : 'star-outline'"
+              >
               </ion-icon>
             </div>
             <p>{{ reviewAnalysis?.predictedRating | number:'1.1-1' }} / 5</p>
@@ -235,7 +244,7 @@
           (reviewUpdated)="loadReviews()"
         ></app-review-form>
 
-        <!-- Rest of your existing review list code -->
+        <!-- existing review list code -->
         <ion-list>
           <ion-item *ngFor="let review of displayedReviews" class="review-item">
             <ion-label>
@@ -253,6 +262,19 @@
                   {{ getDate(review.createdAt) | date:'medium' }}
                 </ion-note>
               </p>
+
+              <!-- Owner Reply Section -->
+              <div class="reply-section" *ngIf="review.ownerReply">
+                <div class="reply-item owner-reply">
+                  <h6>Owner's Response</h6>
+                  <p class="reply-text">{{ review.ownerReply.text }}</p>
+                  <p class="reply-date">
+                    <ion-note>
+                      {{ getDate(review.ownerReply.createdAt) | date:'medium' }}
+                    </ion-note>
+                  </p>
+                </div>
+              </div>
             </ion-label>
           </ion-item>
 

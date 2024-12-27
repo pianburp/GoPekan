@@ -41,17 +41,16 @@
           <ion-item>
             <ion-label position="stacked">Reply to this review</ion-label>
             <ion-textarea 
-              [(ngModel)]="replyText"
+              [(ngModel)]="review.tempReplyText"
               placeholder="Write your response...">
             </ion-textarea>
           </ion-item>
           <ion-button 
-          expand="block" 
-          fill="clear"
-          *ngIf="review.id"
-          (click)="replyToReview(review.id)">
-          Submit Reply
-        </ion-button>
+            expand="block" 
+            fill="clear"
+            (click)="replyToReview(review)">
+            Submit Reply
+          </ion-button>
         </div>
       </ion-card-content>
     </ion-card>

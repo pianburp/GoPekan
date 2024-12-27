@@ -694,3 +694,40 @@ ion-toolbar {
     }
   }
 }
+
+/* Add to review.page.scss */
+
+.reply-section {
+  margin-top: 16px;
+  margin-left: 24px;
+  border-left: 2px solid var(--ion-color-medium);
+  padding-left: 16px;
+}
+
+.reply-item {
+  margin-bottom: 12px;
+  padding: 12px;
+  border-radius: 8px;
+
+  &.owner-reply {
+    background: rgba(var(--ion-color-primary-rgb), 0.1);
+    
+    h6 {
+      margin: 0 0 8px 0;
+      color: var(--ion-color-primary);
+      font-weight: bold;
+    }
+  }
+}
+
+.reply-text {
+  margin: 0;
+  font-size: 14px;
+  color: #fff;
+  line-height: 1.4;
+}
+
+.reply-date {
+  margin: 4px 0 0;
+  font-size: 12px;
+}

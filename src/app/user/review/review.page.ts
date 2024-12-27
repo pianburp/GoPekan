@@ -11,6 +11,10 @@ interface Review {
   userId: string;
   createdAt: Timestamp;
   id?: string;
+  ownerReply?: {
+    text: string;
+    createdAt: any;
+  };
 }
 
 interface RestaurantStatus {

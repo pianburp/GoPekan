@@ -1,8 +1,9 @@
+// review.page.ts
 import { Component, OnInit } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
 import { Auth, getAuth } from '@angular/fire/auth';
 import { Firestore, collection, collectionData, doc, getDoc, updateDoc, query, orderBy } from '@angular/fire/firestore';
-import { Observable, tap, catchError } from 'rxjs';
+import { Observable, tap, catchError, BehaviorSubject } from 'rxjs';
 import { map } from 'rxjs/operators';
 
 interface Review {
@@ -14,7 +15,8 @@ interface Review {
   ownerReply?: {
     text: string;
     createdAt: any;
-  };
+  } | null;
+  tempReplyText?: string;
 }
 
 @Component({
@@ -23,13 +25,13 @@ interface Review {
   styleUrls: ['./review.page.scss'],
 })
 export class ReviewPage implements OnInit {
-  reviews: Observable<Review[]> = new Observable<Review[]>();
+  private reviewsSubject = new BehaviorSubject<Review[]>([]);
+  reviews: Observable<Review[]> = this.reviewsSubject.asObservable();
   restaurantId: string = '';
   isOwner: boolean = false;
-  replyText: string = '';
   hasReviews: boolean = false;
   auth = getAuth();
-  isLoading: boolean = false; 
+  isLoading: boolean = false;
 
   constructor(
     private router: Router,
@@ -65,36 +67,60 @@ export class ReviewPage implements OnInit {
       return;
     }
   
-    this.isLoading = true; 
+    this.isLoading = true;
     const reviewsRef = collection(this.firestore, `restaurant/${this.restaurantId}/reviews`);
     const reviewsQuery = query(reviewsRef, orderBy('createdAt', 'desc'));
   
-    this.reviews = collectionData(reviewsQuery, { idField: 'id' }).pipe(
+    collectionData(reviewsQuery, { idField: 'id' }).pipe(
       map(reviews => reviews as Review[]),
       tap(reviews => {
         this.hasReviews = reviews.length > 0;
         this.isLoading = false;
+        // Initialize tempReplyText for each review
+        reviews.forEach(review => {
+          review.tempReplyText = '';
+        });
+        this.reviewsSubject.next(reviews);
       }),
       catchError(error => {
         console.error('Error loading reviews:', error);
-        this.isLoading = false; 
+        this.isLoading = false;
         return [];
       })
-    );
+    ).subscribe();
   }
 
-  async replyToReview(reviewId: string | undefined) {
-    if (!reviewId || !this.replyText || !this.restaurantId) return;
+  async replyToReview(review: Review) {
+    if (!review.id || !review.tempReplyText || !this.restaurantId) return;
 
     try {
-      const reviewRef = doc(this.firestore, `restaurant/${this.restaurantId}/reviews/${reviewId}`);
-      await updateDoc(reviewRef, {
+      const reviewRef = doc(this.firestore, `restaurant/${this.restaurantId}/reviews/${review.id}`);
+      const replyData = {
         ownerReply: {
-          text: this.replyText,
+          text: review.tempReplyText,
           createdAt: new Date()
         }
+      };
+      
+      await updateDoc(reviewRef, replyData);
+      
+      // Update the reviews in the subject with proper typing
+      const currentReviews = this.reviewsSubject.getValue();
+      const updatedReviews = currentReviews.map(r => {
+        if (r.id === review.id) {
+          return {
+            ...r,
+            ownerReply: {
+              text: review.tempReplyText || '',
+              createdAt: new Date()
+            },
+            tempReplyText: ''
+          };
+        }
+        return r;
       });
-      this.replyText = '';
+      
+      this.reviewsSubject.next(updatedReviews);
     } catch (error) {
       console.error('Error replying to review:', error);
     }
