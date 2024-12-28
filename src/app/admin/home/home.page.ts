@@ -4,6 +4,7 @@ import { Auth, signOut } from '@angular/fire/auth';
 import { Firestore, collection, getDocs, doc, updateDoc } from '@angular/fire/firestore';
 import { PopoverController } from '@ionic/angular';
 import { ProfilePopoverComponent } from './components/profile-popover.component';
+import { RestaurantDetailPopoverComponent } from './components/restaurant-detail-popover.component';
 
 interface Restaurant {
   name: string;
@@ -73,6 +74,19 @@ export class HomePage implements OnInit {
       component: ProfilePopoverComponent,
       event: event,
       translucent: true
+    });
+    return await popover.present();
+  }
+
+  async presentRestaurantDetail(restaurant: Restaurant, event: Event) {
+    const popover = await this.popoverController.create({
+      component: RestaurantDetailPopoverComponent,
+      event: event,
+      translucent: true,
+      componentProps: {
+        restaurant: restaurant
+      },
+      size: 'auto'
     });
     return await popover.present();
   }

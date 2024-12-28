@@ -24,6 +24,9 @@
             <h2>{{ restaurant.name }}</h2>
             <p>{{ restaurant.desc }}</p>
           </ion-label>
+          <ion-button slot="end" color="primary" fill="clear" (click)="presentRestaurantDetail(restaurant, $event)">
+            <ion-icon name="information-circle-outline"></ion-icon>
+          </ion-button>
           <ion-button slot="end" color="success" (click)="verifyRestaurant(restaurant)">
             <ion-icon name="checkmark-circle-outline"></ion-icon>
             Verify
@@ -50,6 +53,9 @@
             <h2>{{ restaurant.name }}</h2>
             <p>{{ restaurant.desc }}</p>
           </ion-label>
+          <ion-button slot="end" color="primary" fill="clear" (click)="presentRestaurantDetail(restaurant, $event)">
+            <ion-icon name="information-circle-outline"></ion-icon>
+          </ion-button>
         </ion-item>
         <ion-item *ngIf="verifiedRestaurants.length === 0">
           <ion-label>No verified restaurants found</ion-label>

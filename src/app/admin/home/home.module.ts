@@ -1,21 +1,22 @@
+// src/app/admin/home/home.module.ts
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { FormsModule } from '@angular/forms';
-
 import { IonicModule } from '@ionic/angular';
-
-import { HomePageRoutingModule } from './home-routing.module';
-
+import { FormsModule } from '@angular/forms';
 import { HomePage } from './home.page';
-import { ProfilePopoverComponent } from './components/profile-popover.component';
+import { HomePageRoutingModule } from './home-routing.module';
+import { ProfilePopoverModule } from './components/profile-popover.module';
+import { RestaurantDetailPopoverModule } from './components/restaurant-detail-popover.module';
 
 @NgModule({
   imports: [
     CommonModule,
     FormsModule,
     IonicModule,
-    HomePageRoutingModule
+    HomePageRoutingModule,
+    ProfilePopoverModule,
+    RestaurantDetailPopoverModule
   ],
-  declarations: [HomePage, ProfilePopoverComponent]
+  declarations: [HomePage]
 })
 export class HomePageModule {}

@@ -30,7 +30,7 @@
     </ion-row>
   </ion-grid>
 
-  <ion-list>
+  <ion-card class="ion-padding">
     <ion-list-header> Restaurants </ion-list-header>
 
     <ion-item *ngFor="let restaurant of restaurants">
@@ -43,5 +43,5 @@
         {{ restaurant.averageRating }}
       </ion-note>
     </ion-item>
-  </ion-list>
+  </ion-card>
 </ion-content>
