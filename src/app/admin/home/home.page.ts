@@ -2,6 +2,8 @@ import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { Auth, signOut } from '@angular/fire/auth';
 import { Firestore, collection, getDocs, doc, updateDoc } from '@angular/fire/firestore';
+import { PopoverController } from '@ionic/angular';
+import { ProfilePopoverComponent } from './components/profile-popover.component';
 
 interface Restaurant {
   name: string;
@@ -24,7 +26,8 @@ export class HomePage implements OnInit {
   constructor(
     private auth: Auth,
     private router: Router,
-    private firestore: Firestore
+    private firestore: Firestore,
+    private popoverController: PopoverController
   ) { }
 
   async ngOnInit() {
@@ -65,12 +68,12 @@ export class HomePage implements OnInit {
     }
   }
 
-  async logout() {
-    try {
-      await signOut(this.auth);
-      this.router.navigate(['/login']); 
-    } catch (error) {
-      console.error('Error logging out:', error);
-    }
+  async presentProfilePopover(event: Event) {
+    const popover = await this.popoverController.create({
+      component: ProfilePopoverComponent,
+      event: event,
+      translucent: true
+    });
+    return await popover.present();
   }
 }

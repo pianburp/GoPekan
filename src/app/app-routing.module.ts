@@ -62,6 +62,10 @@ const routes: Routes = [
   {
     path: 'admin/home',
     loadChildren: () => import('./admin/home/home.module').then( m => m.HomePageModule)
+  },
+  {
+    path: 'admin/dashboard',
+    loadChildren: () => import('./admin/dashboard/dashboard.module').then( m => m.DashboardPageModule)
   }
 ];
 

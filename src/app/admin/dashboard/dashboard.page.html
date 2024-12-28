@@ -1,0 +1,47 @@
+<ion-header [translucent]="true">
+  <ion-toolbar>
+    <ion-title (click)="navigateToHome()">GoPekan</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content [fullscreen]="true">
+  <ion-grid>
+    <ion-row>
+      <ion-col>
+        <ion-card>
+          <ion-card-content>
+            <ion-card-title>Total Restaurants</ion-card-title>
+            <ion-text>
+              <h2>{{ totalRestaurants }}</h2>
+            </ion-text>
+          </ion-card-content>
+        </ion-card>
+      </ion-col>
+      <ion-col>
+        <ion-card>
+          <ion-card-content>
+            <ion-card-title>Total Reviews</ion-card-title>
+            <ion-text>
+              <h2>{{ totalReviews }}</h2>
+            </ion-text>
+          </ion-card-content>
+        </ion-card>
+      </ion-col>
+    </ion-row>
+  </ion-grid>
+
+  <ion-list>
+    <ion-list-header> Restaurants </ion-list-header>
+
+    <ion-item *ngFor="let restaurant of restaurants">
+      <ion-label>
+        <h2>{{ restaurant.name }}</h2>
+        <p>Reviews: {{ restaurant.totalReviews }}</p>
+      </ion-label>
+      <ion-note slot="end" color="warning">
+        <ion-icon name="star"></ion-icon>
+        {{ restaurant.averageRating }}
+      </ion-note>
+    </ion-item>
+  </ion-list>
+</ion-content>

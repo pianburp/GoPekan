@@ -184,30 +184,4 @@ export class HomePage implements OnInit {
     }
   }
 
-  async navigateToProfile() {
-    try {
-      const popover = await this.popoverController.getTop();
-      if (popover) {
-        await popover.dismiss();
-      }
-      await this.router.navigate(['/user/profile']);
-    } catch (error) {
-      console.error('Navigation error:', error);
-    }
-  }
-
-  async logout() {
-    try {
-      await signOut(this.auth);
-      await this.router.navigate(['/login']);
-    } catch (error) {
-      console.error('Logout error:', error);
-      const alert = await this.alertCtrl.create({
-        header: 'Error',
-        message: 'Failed to logout. Please try again.',
-        buttons: ['OK'],
-      });
-      await alert.present();
-    }
-  }
 }
