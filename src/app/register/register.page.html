@@ -46,6 +46,19 @@
         ></ion-input>
       </ion-item>
 
+      <!-- Phone Input with Icon -->
+      <ion-item>
+        <ion-icon name="call-outline" slot="start"></ion-icon>
+        <ion-input
+          type="tel"
+          fill="solid"
+          label="Phone Number"
+          labelPlacement="floating"
+          errorText="Invalid phone number"
+          [(ngModel)]="userPhone"
+        ></ion-input>
+      </ion-item>
+
       <!-- Password Input with Icon -->
       <ion-item>
         <ion-icon name="lock-closed-outline" slot="start"></ion-icon>
@@ -80,7 +93,7 @@
         <ion-input
           type="email"
           fill="solid"
-          label="Business Email"
+          label="Email"
           labelPlacement="floating"
           errorText="Invalid email"
           [(ngModel)]="businessEmail"
@@ -93,10 +106,22 @@
         <ion-input
           type="text"
           fill="solid"
-          label="Business Name"
+          label="Name"
           labelPlacement="floating"
           errorText="Invalid business name"
           [(ngModel)]="businessName"
+        ></ion-input>
+      </ion-item>
+
+      <ion-item>
+        <ion-icon name="call-outline" slot="start"></ion-icon>
+        <ion-input
+          type="tel"
+          fill="solid"
+          label="Phone"
+          labelPlacement="floating"
+          errorText="Invalid phone number"
+          [(ngModel)]="businessPhone"
         ></ion-input>
       </ion-item>
 
@@ -105,7 +130,7 @@
         <ion-input
           type="text"
           fill="solid"
-          label="Business Address"
+          label="Address"
           labelPlacement="floating"
           errorText="Invalid address"
           [(ngModel)]="businessAddress"

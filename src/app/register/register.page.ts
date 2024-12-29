@@ -15,16 +15,17 @@ export class RegisterPage implements OnInit {
   slideDirection = 'slide-left';
 
   onSegmentChange(event: any) {
-    //animation card
     this.slideDirection = event.detail.value === 'user' ? 'slide-right' : 'slide-left';
     this.selectedSegment = event.detail.value;
   }
   
   userEmail: string = '';
   userName: string = '';
+  userPhone: string = '';
   userPassword: string = '';
   businessEmail: string = '';
   businessName: string = '';
+  businessPhone: string = '';
   businessAddress: string = '';
   businessPassword: string = '';
 
@@ -52,11 +53,12 @@ export class RegisterPage implements OnInit {
       await setDoc(doc(this.firestore, 'users', userCredential.user.uid), {
         email: this.userEmail,
         name: this.userName,
+        phoneNumber: this.userPhone,
         type: 'user',
         emailVerified: false
       });
 
-      await signOut(this.auth); // Sign out user until they verify email
+      await signOut(this.auth);
       await this.presentVerificationAlert();
       this.router.navigate(['/login']);
     } catch (error) {
@@ -79,12 +81,13 @@ export class RegisterPage implements OnInit {
       await setDoc(doc(this.firestore, 'users', userCredential.user.uid), {
         email: this.businessEmail,
         name: this.businessName,
+        phoneNumber: this.businessPhone,
         address: this.businessAddress,
         type: 'business',
         emailVerified: false
       });
 
-      await signOut(this.auth); // Sign out user until they verify email
+      await signOut(this.auth);
       await this.presentVerificationAlert();
       this.router.navigate(['/login']);
     } catch (error) {

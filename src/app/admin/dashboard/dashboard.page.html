@@ -6,42 +6,88 @@
 
 <ion-content [fullscreen]="true">
   <ion-grid>
+    <!-- Stats Cards -->
     <ion-row>
-      <ion-col>
+      <ion-col size="12" size-md="4">
         <ion-card>
           <ion-card-content>
             <ion-card-title>Total Restaurants</ion-card-title>
-            <ion-text>
+            <ion-text color="primary">
               <h2>{{ totalRestaurants }}</h2>
             </ion-text>
           </ion-card-content>
         </ion-card>
       </ion-col>
-      <ion-col>
+      
+      <ion-col size="12" size-md="4">
         <ion-card>
           <ion-card-content>
             <ion-card-title>Total Reviews</ion-card-title>
-            <ion-text>
+            <ion-text color="secondary">
               <h2>{{ totalReviews }}</h2>
             </ion-text>
           </ion-card-content>
         </ion-card>
       </ion-col>
+
+      <ion-col size="12" size-md="4">
+        <ion-card>
+          <ion-card-content>
+            <ion-card-title>Average Rating</ion-card-title>
+            <ion-text color="warning">
+              <h2>{{ averageRating }} <ion-icon name="star"></ion-icon></h2>
+            </ion-text>
+          </ion-card-content>
+        </ion-card>
+      </ion-col>
+    </ion-row>
+
+    <!-- Charts -->
+    <ion-row>
+      <ion-col size="12" size-md="6">
+        <ion-card>
+          <ion-card-header>
+            <ion-card-title>Restaurant Ratings & Reviews</ion-card-title>
+          </ion-card-header>
+          <ion-card-content>
+            <div class="chart-container">
+              <canvas id="ratingChart"></canvas>
+            </div>
+          </ion-card-content>
+        </ion-card>
+      </ion-col>
+      
+      <ion-col size="12" size-md="6">
+        <ion-card>
+          <ion-card-header>
+            <ion-card-title>Rating Distribution</ion-card-title>
+          </ion-card-header>
+          <ion-card-content>
+            <div class="chart-container">
+              <canvas id="distributionChart"></canvas>
+            </div>
+          </ion-card-content>
+        </ion-card>
+      </ion-col>
+    </ion-row>
+
+    <!-- Restaurant List -->
+    <ion-row>
+      <ion-col>
+        <ion-card class="ion-padding">
+          <ion-list-header>Restaurants Ranking</ion-list-header>
+          <ion-item *ngFor="let restaurant of restaurants">
+            <ion-label>
+              <h2>{{ restaurant.name }}</h2>
+              <p>Reviews: {{ restaurant.totalReviews }}</p>
+            </ion-label>
+            <ion-note slot="end" color="warning">
+              <ion-icon name="star"></ion-icon>
+              {{ restaurant.averageRating }}
+            </ion-note>
+          </ion-item>
+        </ion-card>
+      </ion-col>
     </ion-row>
   </ion-grid>
-
-  <ion-card class="ion-padding">
-    <ion-list-header> Restaurants </ion-list-header>
-
-    <ion-item *ngFor="let restaurant of restaurants">
-      <ion-label>
-        <h2>{{ restaurant.name }}</h2>
-        <p>Reviews: {{ restaurant.totalReviews }}</p>
-      </ion-label>
-      <ion-note slot="end" color="warning">
-        <ion-icon name="star"></ion-icon>
-        {{ restaurant.averageRating }}
-      </ion-note>
-    </ion-item>
-  </ion-card>
 </ion-content>

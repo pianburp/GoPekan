@@ -40,7 +40,6 @@ export class HomePage implements OnInit {
   async ngOnInit() {
     await this.loadRestaurants();
     this.filteredRestaurants = [...this.restaurants];
-    await this.getTotalReviews();
   }
 
   handleImageError(event: Event) {
@@ -69,41 +68,6 @@ export class HomePage implements OnInit {
     });
   }
 
-  async getTotalReviews() {
-    try {
-      let totalReviews = 0;
-
-      // First get all verified restaurants only
-      const restaurantsRef = collection(this.firestore, 'restaurant');
-      const verifiedQuery = query(restaurantsRef, where('isVerified', '==', true));
-      const restaurantSnapshot = await getDocs(verifiedQuery);
-
-      // For each restaurant, get its reviews subcollection
-      for (const restaurantDoc of restaurantSnapshot.docs) {
-        const reviewsRef = collection(
-          this.firestore,
-          'restaurant',
-          restaurantDoc.id,
-          'reviews'
-        );
-        const reviewsSnapshot = await getDocs(reviewsRef);
-
-        // Add the number of reviews for this restaurant
-        const restaurantReviews = reviewsSnapshot.size;
-        totalReviews += restaurantReviews;
-
-        console.log(
-          `${restaurantDoc.data()['name']}: ${restaurantReviews} reviews`
-        );
-      }
-
-      console.log(`Total reviews across all verified restaurants: ${totalReviews}`);
-      return totalReviews;
-    } catch (error) {
-      console.error('Error counting total reviews:', error);
-      throw error;
-    }
-  }
 
   async presentProfilePopover(event: any) {
     const popover = await this.popoverController.create({

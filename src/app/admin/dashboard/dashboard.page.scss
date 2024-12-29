@@ -14,3 +14,50 @@ ion-list-header{
     font-size: 1.5em;
     font-weight: bolder;
 }
+ion-toolbar {
+    ion-title {
+      font-size: 2em;
+      font-weight: bolder;
+      color: #9ac1fc;
+      animation: fadeIn 0.5s ease-out;
+    }
+  }
+  
+  ion-card-title {
+    font-size: 1.5em;
+    font-weight: bolder;
+  }
+  
+  ion-list-header {
+    font-size: 1.5em;
+    font-weight: bolder;
+  }
+  
+  .chart-container {
+    position: relative;
+    height: 300px;
+    width: 100%;
+  }
+  
+  ion-card {
+    ion-card-content {
+      ion-text {
+        h2 {
+          font-size: 2em;
+          margin: 10px 0;
+          display: flex;
+          align-items: center;
+          gap: 8px;
+        }
+      }
+    }
+  }
+  
+  @keyframes fadeIn {
+    from {
+      opacity: 0;
+    }
+    to {
+      opacity: 1;
+    }
+  }
