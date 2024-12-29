@@ -53,7 +53,7 @@ export class RegisterPage implements OnInit {
       await setDoc(doc(this.firestore, 'users', userCredential.user.uid), {
         email: this.userEmail,
         name: this.userName,
-        phoneNumber: this.userPhone,
+        phonenumber: this.userPhone,
         type: 'user',
         emailVerified: false
       });
@@ -81,7 +81,7 @@ export class RegisterPage implements OnInit {
       await setDoc(doc(this.firestore, 'users', userCredential.user.uid), {
         email: this.businessEmail,
         name: this.businessName,
-        phoneNumber: this.businessPhone,
+        phonenumber: this.businessPhone,
         address: this.businessAddress,
         type: 'business',
         emailVerified: false
