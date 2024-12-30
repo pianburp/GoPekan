@@ -8,7 +8,7 @@
 
   <ion-card class="animate-item">
     <div class="profile-picture-container">
-      <img [src]="userProfile.photoURL || 'assets/default-avatar.jpg'" alt="Profile picture" class="profile-picture">
+      <img [src]="userProfile.photoURL || 'assets/default-avatar.png'" alt="Profile picture" class="profile-picture">
       <input type="file" (change)="onFileSelected($event)" accept="image/*" #fileInput style="display: none">
       <button (click)="fileInput.click()">Change Profile Picture</button>
     </div>
