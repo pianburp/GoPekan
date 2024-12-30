@@ -8,9 +8,15 @@
 
   <ion-card class="animate-item">
     <div class="profile-picture-container">
-      <img [src]="userProfile.photoURL || 'assets/default-avatar.png'" alt="Profile picture" class="profile-picture">
+      <div class="image-container">
+        <img [src]="userProfile.photoURL || 'assets/default-avatar.png'" alt="Profile picture" class="profile-picture">
+        <ion-fab vertical="bottom" horizontal="end" slot="fixed">
+          <ion-fab-button size="small" (click)="fileInput.click()" color="primary">
+            <ion-icon name="camera"></ion-icon>
+          </ion-fab-button>
+        </ion-fab>
+      </div>
       <input type="file" (change)="onFileSelected($event)" accept="image/*" #fileInput style="display: none">
-      <button (click)="fileInput.click()">Change Profile Picture</button>
     </div>
     <ion-card-header>
       <ion-card-title class="ion-text-center animate-item">
