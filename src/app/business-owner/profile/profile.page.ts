@@ -252,4 +252,72 @@ export class ProfilePage implements OnInit {
   navigateToHome() {
     this.router.navigate(['/business/home']);
   }
+
+  async deleteAccount() {
+    const confirmAlert = await this.alertController.create({
+      header: 'Delete Account',
+      message: 'Are you sure you want to delete your account? This action cannot be undone.',
+      buttons: [
+        {
+          text: 'Cancel',
+          role: 'cancel'
+        },
+        {
+          text: 'Delete',
+          role: 'destructive',
+          handler: async () => {
+            const loading = await this.loadingController.create({
+              message: 'Deleting account...',
+              spinner: 'crescent'
+            });
+            await loading.present();
+
+            try {
+              const user = this.auth.currentUser;
+              if (!user) {
+                throw new Error('No user logged in');
+              }
+
+              // Delete user data from Firestore
+              const userDoc = doc(this.firestore, 'users', user.uid);
+              await updateDoc(userDoc, {
+                deleted: true,
+                deletedAt: new Date()
+              });
+
+              // Delete the user's authentication account
+              await user.delete();
+
+              await loading.dismiss();
+
+              // Show success message
+              const alert = await this.alertController.create({
+                header: 'Account Deleted',
+                message: 'Your account has been successfully deleted.',
+                buttons: [{
+                  text: 'OK',
+                  handler: () => {
+                    this.router.navigate(['/login']);
+                  }
+                }]
+              });
+              await alert.present();
+
+            } catch (error: any) {
+              await loading.dismiss();
+              
+              const alert = await this.alertController.create({
+                header: 'Error',
+                message: `Failed to delete account. Error: ${error.message}`,
+                buttons: ['OK']
+              });
+              await alert.present();
+            }
+          }
+        }
+      ]
+    });
+
+    await confirmAlert.present();
+  }
 }
