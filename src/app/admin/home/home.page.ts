@@ -69,6 +69,19 @@ export class HomePage implements OnInit {
     }
   }
 
+  async rejectRestaurant(restaurant: Restaurant) {
+    try {
+      const restaurantRef = doc(this.firestore, 'restaurant', restaurant.id);
+      await updateDoc(restaurantRef, {
+        isVerified: false
+      });
+      // Reload restaurants after rejection
+      await this.loadRestaurants();
+    } catch (error) {
+      console.error('Error rejecting restaurant:', error);
+    }
+  }
+
   async presentProfilePopover(event: Event) {
     const popover = await this.popoverController.create({
       component: ProfilePopoverComponent,

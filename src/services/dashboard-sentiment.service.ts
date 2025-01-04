@@ -50,11 +50,13 @@ export class DashboardSentimentService {
         this.lastResetTime = Date.now();
       }
 
-      const prompt = `Analyze the sentiment of the following review text and provide a score between -1 (most negative) and 1 (most positive), and a label (positive, neutral, or negative).
+      const prompt = `Analyze the sentiment of the following review text and provide 
+      a score between -1 (most negative) and 1 (most positive), and a label (positive, neutral, or negative).
       
       Review: "${text}"
       
-      Important: Only respond with a JSON object. No markdown, no code blocks, no additional text. Just the pure JSON object in this exact format:
+      Important: Only respond with a JSON object. No markdown, no code blocks, no additional text. 
+      Just the pure JSON object in this exact format:
       { "score": number, "label": "positive" | "neutral" | "negative" }`;
 
       this.requestCounter++;
@@ -89,7 +91,7 @@ export class DashboardSentimentService {
 
   async analyzeReviewsBatch(reviews: Review[]): Promise<SentimentResult[]> {
     const results: SentimentResult[] = [];
-    const batchSize = 25; // Increased from 5 to 25 for faster processing
+    const batchSize = 25; 
     
     for (let i = 0; i < reviews.length; i += batchSize) {
       const batch = reviews.slice(i, i + batchSize);

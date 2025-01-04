@@ -56,6 +56,10 @@
           <ion-button slot="end" color="primary" fill="clear" (click)="presentRestaurantDetail(restaurant, $event)">
             <ion-icon name="information-circle-outline"></ion-icon>
           </ion-button>
+          <ion-button slot="end" color="danger" (click)="rejectRestaurant(restaurant)">
+            <ion-icon name="close-circle-outline"></ion-icon>
+            Reject
+          </ion-button>
         </ion-item>
         <ion-item *ngIf="verifiedRestaurants.length === 0">
           <ion-label>No verified restaurants found</ion-label>

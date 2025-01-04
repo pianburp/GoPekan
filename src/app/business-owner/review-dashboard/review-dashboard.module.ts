@@ -7,6 +7,7 @@ import { IonicModule } from '@ionic/angular';
 import { ReviewDashboardPageRoutingModule } from './review-dashboard-routing.module';
 
 import { ReviewDashboardPage } from './review-dashboard.page';
+import {TrendPredictionChartComponent} from './components/trend-prediction-chart.component';
 
 @NgModule({
   imports: [
@@ -15,6 +16,6 @@ import { ReviewDashboardPage } from './review-dashboard.page';
     IonicModule,
     ReviewDashboardPageRoutingModule
   ],
-  declarations: [ReviewDashboardPage]
+  declarations: [ReviewDashboardPage, TrendPredictionChartComponent]
 })
 export class ReviewDashboardPageModule {}

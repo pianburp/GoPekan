@@ -5,10 +5,6 @@
 </ion-header>
 
 <ion-content [fullscreen]="true">
-  <ion-grid>
-    <!-- Stats Cards -->
-    <ion-row>
-      <ion-col size="12" size-md="4">
         <ion-card>
           <ion-card-content>
             <ion-card-title>Total Restaurants</ion-card-title>
@@ -17,9 +13,7 @@
             </ion-text>
           </ion-card-content>
         </ion-card>
-      </ion-col>
       
-      <ion-col size="12" size-md="4">
         <ion-card>
           <ion-card-content>
             <ion-card-title>Total Reviews</ion-card-title>
@@ -28,23 +22,8 @@
             </ion-text>
           </ion-card-content>
         </ion-card>
-      </ion-col>
-
-      <ion-col size="12" size-md="4">
-        <ion-card>
-          <ion-card-content>
-            <ion-card-title>Average Rating</ion-card-title>
-            <ion-text color="warning">
-              <h2>{{ averageRating }} <ion-icon name="star"></ion-icon></h2>
-            </ion-text>
-          </ion-card-content>
-        </ion-card>
-      </ion-col>
-    </ion-row>
 
     <!-- Charts -->
-    <ion-row>
-      <ion-col size="12" size-md="6">
         <ion-card>
           <ion-card-header>
             <ion-card-title>Restaurant Ratings & Reviews</ion-card-title>
@@ -55,9 +34,7 @@
             </div>
           </ion-card-content>
         </ion-card>
-      </ion-col>
       
-      <ion-col size="12" size-md="6">
         <ion-card>
           <ion-card-header>
             <ion-card-title>Rating Distribution</ion-card-title>
@@ -68,26 +45,40 @@
             </div>
           </ion-card-content>
         </ion-card>
-      </ion-col>
-    </ion-row>
 
     <!-- Restaurant List -->
-    <ion-row>
-      <ion-col>
-        <ion-card class="ion-padding">
-          <ion-list-header>Restaurants Ranking</ion-list-header>
-          <ion-item *ngFor="let restaurant of restaurants">
-            <ion-label>
-              <h2>{{ restaurant.name }}</h2>
-              <p>Reviews: {{ restaurant.totalReviews }}</p>
-            </ion-label>
-            <ion-note slot="end" color="warning">
+    <ion-card class="ion-padding">
+      <ion-list-header>Restaurants Ranking</ion-list-header>
+      <div *ngIf="loadingSentiment" class="ion-text-center ion-padding">
+        <ion-spinner></ion-spinner>
+        <p>Analyzing sentiment...</p>
+      </div>
+      
+      <ion-item *ngFor="let restaurant of restaurantSentiments" button detail="false" (click)="presentSentimentPopover($event, restaurant)">
+        <ion-label>
+          <h2>{{ restaurant.restaurantName }}</h2>
+          <p>Reviews: {{ restaurant.totalReviews }}</p>
+          <p>
+            <ion-text [color]="getSentimentColor(restaurant.sentiment.score)">
+              Sentiment: {{ restaurant.sentiment.overallSentiment }}
+              ({{ restaurant.sentiment.score }}%)
+            </ion-text>
+          </p>
+        </ion-label>
+        <ion-note slot="end">
+          <div class="rating-container">
+            <div class="stars">
               <ion-icon name="star"></ion-icon>
               {{ restaurant.averageRating }}
-            </ion-note>
-          </ion-item>
-        </ion-card>
-      </ion-col>
-    </ion-row>
-  </ion-grid>
+            </div>
+            <div class="sentiment-summary">
+              <ion-badge [color]="getSentimentColor(restaurant.sentiment.score)">
+                {{ restaurant.sentiment.overallSentiment }}
+              </ion-badge>
+            </div>
+          </div>
+        </ion-note>
+      </ion-item>
+    </ion-card>
+    
 </ion-content>

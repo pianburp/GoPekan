@@ -2,6 +2,10 @@ import { Component, OnInit } from '@angular/core';
 import { Firestore, collection, getDocs } from '@angular/fire/firestore';
 import { Router } from '@angular/router';
 import { Chart } from 'chart.js/auto';
+import { SentimentAnalysisService, RestaurantSentiment } from '../../../services/sentiment-analysis.service';
+import { firstValueFrom } from 'rxjs';
+import { PopoverController } from '@ionic/angular';
+import { SentimentPopoverComponent } from './components/sentiment-popover.component';
 
 interface Restaurant {
   name: string;
@@ -10,15 +14,6 @@ interface Restaurant {
   imageUrl?: string;
   isVerified: boolean;
   ownerId: string;
-}
-
-interface Review {
-  id: string;
-  createdAt: Date;
-  ownerReply?: string;
-  stars: number;
-  text: string;
-  userid: string;
 }
 
 interface RatingCounts {
@@ -37,32 +32,50 @@ export class DashboardPage implements OnInit {
     name: string;
     totalReviews: number;
     averageRating: number;
+    isVerified: boolean;
   }> = [];
+  restaurantSentiments: RestaurantSentiment[] = [];
+  loadingSentiment = false;
 
   ratingChart: any;
   distributionChart: any;
-  averageRating: number = 0;
 
   constructor(
     private firestore: Firestore,
-    private router: Router
+    private router: Router,
+    private sentimentService: SentimentAnalysisService,
+    private popoverController: PopoverController
   ) {}
 
   ngOnInit() {
     this.loadDashboardData();
   }
 
-async loadDashboardData() {
+  async presentSentimentPopover(event: Event, restaurant: RestaurantSentiment) {
+    const popover = await this.popoverController.create({
+      component: SentimentPopoverComponent,
+      componentProps: {
+        restaurant: restaurant
+      },
+      event: event,
+      translucent: true,
+      size: 'auto'
+    });
+  
+    await popover.present();
+  }
+
+  async loadDashboardData() {
     try {
+      this.loadingSentiment = true;
       const restaurantsRef = collection(this.firestore, 'restaurant');
       const restaurantsSnapshot = await getDocs(restaurantsRef);
       
-      this.totalRestaurants = restaurantsSnapshot.size;
+      let verifiedRestaurantsData = [];
       this.totalReviews = 0;
-      let totalStars = 0;
       this.restaurants = [];
+      this.restaurantSentiments = [];
       
-      // Initialize with proper typing
       const ratingCounts: RatingCounts = {
         '1': 0,
         '2': 0,
@@ -71,48 +84,58 @@ async loadDashboardData() {
         '5': 0
       };
 
-      // Process each restaurant
       for (const restaurantDoc of restaurantsSnapshot.docs) {
         const restaurant = restaurantDoc.data() as Restaurant;
         
-        const reviewsRef = collection(this.firestore, 'restaurant', restaurantDoc.id, 'reviews');
-        const reviewsSnapshot = await getDocs(reviewsRef);
-        
-        const reviews = reviewsSnapshot.docs.map(doc => ({
-          id: doc.id,
-          ...doc.data()
-        } as Review));
+        if (restaurant.isVerified) {
+          const reviewsRef = collection(this.firestore, 'restaurant', restaurantDoc.id, 'reviews');
+          const reviewsSnapshot = await getDocs(reviewsRef);
+          
+          const reviews = reviewsSnapshot.docs.map(doc => ({
+            text: doc.data()['text'] || '',
+            stars: doc.data()['stars'] || 0
+          }));
 
-        const totalReviews = reviews.length;
-        this.totalReviews += totalReviews;
+          if (reviews.length > 0) {
+            try {
+              const sentiment = await firstValueFrom(
+                this.sentimentService.analyzeSentiment(reviews, restaurant.name)
+              );
 
-        reviews.forEach(review => {
-          const ratingKey = review.stars.toString();
-          if (ratingKey in ratingCounts) {
-            ratingCounts[ratingKey]++;
-            totalStars += review.stars;
+              const averageRating = reviews.reduce((acc, review) => acc + review.stars, 0) / reviews.length;
+
+              this.restaurantSentiments.push({
+                restaurantName: restaurant.name,
+                averageRating: Number(averageRating.toFixed(1)),
+                totalReviews: reviews.length,
+                sentiment
+              });
+
+              reviews.forEach(review => {
+                const ratingKey = review.stars.toString();
+                if (ratingKey in ratingCounts) {
+                  ratingCounts[ratingKey]++;
+                }
+              });
+
+              verifiedRestaurantsData.push({
+                name: restaurant.name,
+                totalReviews: reviews.length,
+                averageRating: Number(averageRating.toFixed(1)),
+                isVerified: true
+              });
+
+              this.totalReviews += reviews.length;
+            } catch (error) {
+              console.error(`Error analyzing sentiment for ${restaurant.name}:`, error);
+            }
           }
-        });
-
-        const averageRating = reviews.length > 0
-          ? reviews.reduce((acc, review) => acc + review.stars, 0) / reviews.length
-          : 0;
-
-        this.restaurants.push({
-          name: restaurant.name,
-          totalReviews: totalReviews,
-          averageRating: Number(averageRating.toFixed(1))
-        });
+        }
       }
 
-      this.averageRating = this.totalReviews > 0 
-        ? Number((totalStars / this.totalReviews).toFixed(1))
-        : 0;
+      this.totalRestaurants = verifiedRestaurantsData.length;
+      this.restaurants = verifiedRestaurantsData.sort((a, b) => b.averageRating - a.averageRating);
 
-      // Sort restaurants by average rating
-      this.restaurants.sort((a, b) => b.averageRating - a.averageRating);
-
-      // Create charts
       setTimeout(() => {
         this.createRatingChart();
         this.createDistributionChart(ratingCounts);
@@ -120,10 +143,12 @@ async loadDashboardData() {
 
     } catch (error) {
       console.error('Error loading dashboard data:', error);
+    } finally {
+      this.loadingSentiment = false;
     }
   }
 
-  createRatingChart() {
+  createRatingChart(): void {
     const ctx = document.getElementById('ratingChart') as HTMLCanvasElement;
     if (this.ratingChart) {
       this.ratingChart.destroy();
@@ -162,7 +187,7 @@ async loadDashboardData() {
     });
   }
 
-  createDistributionChart(ratingCounts: any) {
+  createDistributionChart(ratingCounts: RatingCounts): void {
     const ctx = document.getElementById('distributionChart') as HTMLCanvasElement;
     if (this.distributionChart) {
       this.distributionChart.destroy();
@@ -195,7 +220,11 @@ async loadDashboardData() {
     });
   }
 
-  navigateToHome() {
+  navigateToHome(): void {
     this.router.navigate(['admin/home']);
+  }
+
+  getSentimentColor(score: number): string {
+    return this.sentimentService.getSentimentColor(score);
   }
 }

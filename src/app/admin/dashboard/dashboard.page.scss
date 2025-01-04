@@ -61,3 +61,23 @@ ion-toolbar {
       opacity: 1;
     }
   }
+  .rating-container {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    gap: 4px;
+  
+    .stars {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      color: var(--ion-color-warning);
+    }
+  
+    .sentiment-summary {
+      ion-badge {
+        font-size: 0.8em;
+      }
+    }
+  }
+  
