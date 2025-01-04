@@ -1,5 +1,8 @@
 import { Injectable } from '@angular/core';
-import { GoogleGenerativeAI, GenerateContentResult } from '@google/generative-ai';
+import {
+  GoogleGenerativeAI,
+  GenerateContentResult,
+} from '@google/generative-ai';
 import { environment } from '../environments/environment';
 import { Observable, from, mergeMap, map, catchError, throwError } from 'rxjs';
 
@@ -18,7 +21,7 @@ export interface RestaurantSentiment {
 }
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class SentimentAnalysisService {
   private genAI: GoogleGenerativeAI;
@@ -26,13 +29,13 @@ export class SentimentAnalysisService {
 
   constructor() {
     this.genAI = new GoogleGenerativeAI(environment.GEMINI_API_KEY);
-    this.model = this.genAI.getGenerativeModel({ 
-      model: "gemini-1.5-flash",
+    this.model = this.genAI.getGenerativeModel({
+      model: 'gemini-1.5-flash',
       generationConfig: {
         temperature: 0.7,
         topP: 0.8,
-        topK: 40
-      }
+        topK: 40,
+      },
     });
   }
 
@@ -40,22 +43,21 @@ export class SentimentAnalysisService {
     if (!str || typeof str !== 'string') {
       throw new Error('Empty or invalid response from API');
     }
-    
+
     str = str.replace(/```(?:json)?\s*/g, '').replace(/`/g, '');
     str = str.trim();
-    
+
     if (!str) {
       throw new Error('Empty response after cleaning');
     }
-    
+
     return str;
   }
 
-  analyzeSentiment(reviews: Array<{ text: string; stars: number }>, restaurantName: string): Observable<SentimentAnalysis> {
-    if (!reviews || reviews.length === 0) {
-      return throwError(() => new Error('No reviews provided for analysis'));
-    }
-
+  analyzeSentiment(
+    reviews: Array<{ text: string; stars: number }>,
+    restaurantName: string
+  ): Observable<SentimentAnalysis> {
     const prompt = `Role: You are a sentiment analysis expert who outputs only valid JSON.
 
 Task: Analyze the following restaurant reviews and output a sentiment analysis in JSON format.
@@ -63,7 +65,7 @@ Task: Analyze the following restaurant reviews and output a sentiment analysis i
 Restaurant: "${restaurantName}"
 
 Reviews to analyze:
-${reviews.map(review => `- ${review.stars}★: "${review.text}"`).join('\n')}
+${reviews.map((review) => `- ${review.stars}★: "${review.text}"`).join('\n')}
 
 Required Output Format (exact JSON structure required):
 {
@@ -98,22 +100,28 @@ Important:
       map((text: string) => {
         const cleanText = this.cleanJsonString(text);
         try {
-          const parsedData = JSON.parse(cleanText) as Partial<SentimentAnalysis>;
-          
-          if (!parsedData.overallSentiment || 
-              !parsedData.score || 
-              !parsedData.summary || 
-              !Array.isArray(parsedData.recommendations)) {
+          const parsedData = JSON.parse(
+            cleanText
+          ) as Partial<SentimentAnalysis>;
+
+          if (
+            !parsedData.overallSentiment ||
+            !parsedData.score ||
+            !parsedData.summary ||
+            !Array.isArray(parsedData.recommendations)
+          ) {
             throw new Error('Missing required fields in response');
           }
 
           const sentiment: SentimentAnalysis = {
-            overallSentiment: this.normalizeOverallSentiment(parsedData.overallSentiment),
+            overallSentiment: this.normalizeOverallSentiment(
+              parsedData.overallSentiment
+            ),
             score: this.normalizeScore(parsedData.score),
             summary: String(parsedData.summary).trim(),
             recommendations: parsedData.recommendations
               .map((rec: string) => rec.trim())
-              .filter((rec: string) => rec.length > 0)
+              .filter((rec: string) => rec.length > 0),
           };
 
           return sentiment;
@@ -124,21 +132,31 @@ Important:
           throw error;
         }
       }),
-      catchError(error => {
+      catchError((error) => {
         if (reviews.length > 0) {
-          const averageRating = reviews.reduce((acc, rev) => acc + rev.stars, 0) / reviews.length;
+          const averageRating =
+            reviews.reduce((acc, rev) => acc + rev.stars, 0) / reviews.length;
           const fallbackScore = (averageRating / 5) * 100;
-          
+
           const fallbackAnalysis: SentimentAnalysis = {
-            overallSentiment: fallbackScore >= 60 ? 'Positive' : fallbackScore >= 40 ? 'Neutral' : 'Negative',
+            overallSentiment:
+              fallbackScore >= 60
+                ? 'Positive'
+                : fallbackScore >= 40
+                ? 'Neutral'
+                : 'Negative',
             score: Math.round(fallbackScore),
-            summary: `Analysis based on ${reviews.length} reviews with average rating of ${averageRating.toFixed(1)} stars.`,
+            summary: `Analysis based on ${
+              reviews.length
+            } reviews with average rating of ${averageRating.toFixed(
+              1
+            )} stars.`,
             recommendations: [
               'Consider collecting more detailed customer feedback',
-              'Monitor customer satisfaction trends regularly'
-            ]
+              'Monitor customer satisfaction trends regularly',
+            ],
           };
-          
+
           return from([fallbackAnalysis]);
         }
         return throwError(() => error);
@@ -146,7 +164,9 @@ Important:
     );
   }
 
-  private normalizeOverallSentiment(sentiment: string): 'Positive' | 'Neutral' | 'Negative' {
+  private normalizeOverallSentiment(
+    sentiment: string
+  ): 'Positive' | 'Neutral' | 'Negative' {
     const normalized = sentiment.toLowerCase().trim();
     if (normalized.includes('positive')) return 'Positive';
     if (normalized.includes('negative')) return 'Negative';
@@ -155,15 +175,15 @@ Important:
 
   private normalizeScore(score: any): number {
     let normalizedScore = Number(score);
-    
+
     if (typeof score === 'string') {
       normalizedScore = Number(score.replace(/[^0-9.]/g, ''));
     }
-    
+
     if (isNaN(normalizedScore)) {
       normalizedScore = 50;
     }
-    
+
     normalizedScore = Math.min(100, Math.max(0, normalizedScore));
     return Math.round(normalizedScore);
   }

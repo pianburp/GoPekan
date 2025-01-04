@@ -66,7 +66,6 @@ export class RestaurantMapComponent implements OnInit {
     // Create Google Maps URL with destination coordinates
     const url = `https://www.google.com/maps/dir/?api=1&destination=${this._latitude},${this._longitude}&destination_place_id=${this.restaurantName}`;
     
-    // Open in new tab
     window.open(url, '_blank');
   }
 

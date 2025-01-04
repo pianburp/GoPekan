@@ -26,8 +26,6 @@ import { RestaurantSentiment } from '../../../../services/sentiment-analysis.ser
             </ion-item>
           </ion-list>
         </div>
-        
-        <ion-button expand="block" (click)="dismiss()">Close</ion-button>
       </div>
     </ion-content>
   `,
@@ -64,10 +62,6 @@ import { RestaurantSentiment } from '../../../../services/sentiment-analysis.ser
     ion-item {
       --padding-start: 0;
     }
-
-    ion-button {
-      margin-top: 16px;
-    }
   `]
 })
 export class SentimentPopoverComponent {
@@ -75,7 +69,4 @@ export class SentimentPopoverComponent {
 
   constructor(private popoverCtrl: PopoverController) {}
 
-  dismiss() {
-    this.popoverCtrl.dismiss();
-  }
 }
