@@ -32,8 +32,25 @@ ion-item {
 ion-title {
   font-size: 2em;
   font-weight: bolder;
-  color: #9ac1fc;
-  animation-delay: 0.1s;
+  
+  .go {
+    color: #4880FF;
+  }
+  
+  .pekan {
+    color: white;
+  }
+  
+  animation: fadeIn 0.5s ease-out;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
 }
 
 // Add staggered delays for list items

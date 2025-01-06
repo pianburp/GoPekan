@@ -1,25 +1,28 @@
-ion-toolbar{
-    ion-title {
-        font-size: 2em;
-        font-weight: bolder;
-        color: #9ac1fc;
-        animation: fadeIn 0.5s ease-out;
-      }
-}
-ion-card-title{
-    font-size: 1.5em;
-    font-weight: bolder;
-}
-ion-list-header{
-    font-size: 1.5em;
-    font-weight: bolder;
-}
 ion-toolbar {
     ion-title {
       font-size: 2em;
       font-weight: bolder;
-      color: #9ac1fc;
+      
+      .go {
+        color: #4880FF;
+      }
+      
+      .pekan {
+        color: white;
+      }
+      
       animation: fadeIn 0.5s ease-out;
+    }
+  }
+
+  ion-toolbar{
+    --background: var(--ion-background-color);
+  }
+  
+  ion-content{
+    ion-title{
+      font-size: 2.2em;
+      font-weight: bolder;
     }
   }
   

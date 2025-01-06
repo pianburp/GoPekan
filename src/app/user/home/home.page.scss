@@ -43,8 +43,25 @@ ion-header {
       ion-title {
         font-size: 2em;
         font-weight: bolder;
-        color: #9ac1fc;
+        
+        .go {
+          color: #4880FF;
+        }
+        
+        .pekan {
+          color: white;
+        }
+        
         animation: fadeIn 0.5s ease-out;
+      }
+      
+      @keyframes fadeIn {
+        from {
+          opacity: 0;
+        }
+        to {
+          opacity: 1;
+        }
       }
 
       ion-buttons {
