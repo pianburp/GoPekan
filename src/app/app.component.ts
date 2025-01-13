@@ -12,6 +12,9 @@ export class AppComponent {
     private platform: Platform,
     private animationCtrl: AnimationController
   ) {}
+  initializeApp() {
+    document.body.classList.add('dark');
+  }
   myPageTransition = (baseEl: HTMLElement, opts?: any) => {
     const DURATION = 300;
     
